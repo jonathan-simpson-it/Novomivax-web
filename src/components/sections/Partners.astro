@@ -1,0 +1,164 @@
+---
+import { PARTNERS } from '../../data/siteConfig';
+---
+
+<section id="partners" class="section section-alt">
+  <div class="container">
+    <div class="section-header reveal-on-scroll">
+      <h2>{PARTNERS.heading}</h2>
+    </div>
+  </div>
+  <div class="partners-track-wrapper" aria-label="Partner logos">
+    <div class="partners-track">
+      {PARTNERS.partners.map((partner) => (
+        <div class="partner-item" tabindex="0">
+          <img
+            class="partner-logo"
+            src={partner.logo}
+            alt={partner.name}
+            loading="lazy"
+          />
+          <span class="partner-name">{partner.name}</span>
+        </div>
+      ))}
+      {PARTNERS.partners.map((partner) => (
+        <div class="partner-item" aria-hidden="true">
+          <img
+            class="partner-logo"
+            src={partner.logo}
+            alt={partner.name}
+            loading="lazy"
+          />
+          <span class="partner-name">{partner.name}</span>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .section-header {
+    max-width: var(--content-width);
+    margin: 0 auto var(--space-10);
+    text-align: center;
+  }
+
+  .section-header h2 {
+    margin-bottom: var(--space-4);
+  }
+
+  .partners-track-wrapper {
+    overflow: hidden;
+    mask: linear-gradient(
+      90deg,
+      transparent,
+      rgb(0 0 0 / 1) 10%,
+      rgb(0 0 0 / 1) 90%,
+      transparent
+    );
+  }
+
+  .partners-track {
+    display: flex;
+    gap: 80px;
+    align-items: center;
+    width: max-content;
+    animation: partners-scroll 35s linear infinite;
+    padding: var(--space-4) var(--space-8) var(--space-8);
+  }
+
+  .partners-track:hover {
+    animation-play-state: paused;
+  }
+
+  .partner-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+    cursor: default;
+  }
+
+  .partner-logo {
+    height: 44px;
+    width: auto;
+    filter: grayscale(100%);
+    opacity: 0.6;
+    transition: filter var(--transition-base), opacity var(--transition-base);
+    flex-shrink: 0;
+  }
+
+  .partners-track:hover .partner-logo {
+    filter: grayscale(0%);
+    opacity: 1;
+  }
+
+  .partner-name {
+    font-size: 10px;
+    color: var(--color-gray-400);
+    white-space: nowrap;
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity var(--transition-base) ease, transform var(--transition-base) ease;
+    pointer-events: none;
+  }
+
+  .partners-track:hover .partner-name {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .partner-item:focus-visible .partner-logo {
+    filter: grayscale(0%);
+    opacity: 1;
+  }
+
+  .partner-item:focus-visible .partner-name {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @keyframes partners-scroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .partners-track-wrapper {
+      overflow: visible;
+      mask: none;
+    }
+
+    .partners-track {
+      animation: none;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: var(--space-6);
+      width: auto;
+    }
+
+    .partner-logo {
+      height: 36px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .partners-track {
+      gap: 50px;
+      padding: var(--space-4) var(--space-4) var(--space-6);
+    }
+
+    .partner-logo {
+      height: 32px;
+    }
+
+    .partner-name {
+      font-size: 9px;
+    }
+
+    .partner-item {
+      gap: 8px;
+    }
+  }
+</style>

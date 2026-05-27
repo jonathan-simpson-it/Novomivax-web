@@ -1,0 +1,93 @@
+---
+import { MISSION } from '../../data/siteConfig';
+---
+
+<section id="mission" class="section section-alt">
+  <div class="container mission-grid">
+    <div class="mission-image reveal-on-scroll">
+      <img
+        src="/images/mission-microscope.jpg"
+        alt="Laboratory microscope used in scientific research"
+        class="mission-img"
+        width="630"
+        height="375"
+        loading="lazy"
+      />
+    </div>
+    <div class="mission-text reveal-on-scroll">
+      <h2>{MISSION.heading}</h2>
+      <p class="mission-statement">{MISSION.statement}</p>
+      <ul class="mission-bullets">
+        {MISSION.bullets.map((bullet) => (
+          <li class="mission-bullet">{bullet}</li>
+        ))}
+      </ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  .mission-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-16);
+    align-items: center;
+  }
+
+  .mission-image {
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+  }
+
+  .mission-img {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+  }
+
+  .mission-text h2 {
+    margin-bottom: var(--space-6);
+  }
+
+  .mission-statement {
+    color: var(--color-body-secondary);
+    font-size: var(--text-lg);
+    margin-bottom: var(--space-8);
+  }
+
+  .mission-bullets {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .mission-bullet {
+    position: relative;
+    padding-left: var(--space-8);
+    color: var(--color-body);
+    line-height: var(--leading-relaxed);
+  }
+
+  .mission-bullet::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.5em;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: var(--color-primary);
+    flex-shrink: 0;
+  }
+
+  @media (max-width: 768px) {
+    .mission-grid {
+      grid-template-columns: 1fr;
+      gap: var(--space-8);
+    }
+  }
+</style>

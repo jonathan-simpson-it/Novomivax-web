@@ -1,0 +1,37 @@
+---
+import { WHY_IT_MATTERS } from '../../data/siteConfig';
+---
+
+<section id="why-it-matters" class="section section-dark">
+  <div class="container">
+    <div class="why-content">
+      <h2 class="reveal-on-scroll">{WHY_IT_MATTERS.heading}</h2>
+      <p class="why-paragraph reveal-on-scroll">{WHY_IT_MATTERS.paragraph}</p>
+      <p class="why-secondary reveal-on-scroll">{WHY_IT_MATTERS.secondary}</p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .why-content {
+    max-width: var(--content-width);
+    margin: 0 auto;
+  }
+
+  .why-content h2 {
+    margin-bottom: var(--space-6);
+  }
+
+  .why-paragraph {
+    font-size: var(--text-lg);
+    color: var(--color-dark-text);
+    margin-bottom: var(--space-8);
+  }
+
+  .why-secondary {
+    color: var(--color-gray-400);
+    font-size: var(--text-base);
+    padding-left: var(--space-6);
+    border-left: 3px solid var(--color-primary);
+  }
+</style>

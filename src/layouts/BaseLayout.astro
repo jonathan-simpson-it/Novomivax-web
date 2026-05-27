@@ -1,0 +1,214 @@
+---
+import crypto from 'node:crypto'
+import '../styles/global.css';
+import HeaderNav from '../components/header/HeaderNav.astro';
+import SiteFooter from '../components/footer/SiteFooter.astro';
+import { SITE_TITLE, SITE_DESCRIPTION } from '../data/siteConfig';
+
+export interface Props {
+  title?: string;
+  description?: string;
+}
+
+const ACCESS_CODE = import.meta.env.PUBLIC_ACCESS_CODE || 'NOVOMI-VAX-2026-X7K9M'
+const ACCESS_HASH = crypto.createHash('sha256').update(ACCESS_CODE).digest('hex')
+const STORAGE_KEY = 'novomi_access_token'
+
+const { title, description } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title ?? SITE_TITLE}</title>
+    <meta name="description" content={description ?? SITE_DESCRIPTION} />
+    <link rel="icon" type="image/png" href="/images/Novomi-logo.png" />
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      crossorigin
+      href="/fonts/raleway-latin.woff2"
+    />
+  </head>
+  <body>
+    <script is:inline define:vars={{ accessHash: ACCESS_HASH, storageKey: STORAGE_KEY }}>
+      (function () {
+        if (localStorage.getItem(storageKey) !== accessHash) {
+          window.location.replace('/signin')
+        }
+      })()
+    </script>
+    <HeaderNav />
+    <main>
+      <slot />
+    </main>
+    <SiteFooter />
+    <div id="lock-overlay"></div>
+    <div class="lock-btn" id="lock-btn" role="button" tabindex="0" aria-label="Lock this page">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+        <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+      </svg>
+      <div class="lock-tooltip" id="lock-tooltip">
+        <p class="lock-tooltip-text">Lock this page? You'll need the access code to reopen.</p>
+        <div class="lock-tooltip-actions">
+          <button class="lock-confirm" id="lock-confirm">Lock</button>
+          <button class="lock-cancel" id="lock-cancel">Cancel</button>
+        </div>
+      </div>
+    </div>
+    <script is:inline define:vars={{ accessHash: ACCESS_HASH, storageKey: STORAGE_KEY }}>
+      // @ts-nocheck
+      document.addEventListener('DOMContentLoaded', () => {
+        const reducedMotion = window.matchMedia(
+          '(prefers-reduced-motion: reduce)'
+        ).matches;
+        if (reducedMotion) return;
+
+        const observer = new IntersectionObserver(
+          (entries) => {
+            for (const entry of entries) {
+              if (entry.isIntersecting) {
+                entry.target.classList.add('is-visible');
+                observer.unobserve(entry.target);
+              }
+            }
+          },
+          { threshold: 0.1 }
+        );
+
+        document
+          .querySelectorAll('.reveal-on-scroll')
+          .forEach((el) => observer.observe(el));
+      });
+
+      var lockBtn = document.getElementById('lock-btn')
+      var lockTooltip = document.getElementById('lock-tooltip')
+      var lockOverlay = document.getElementById('lock-overlay')
+      var lockConfirm = document.getElementById('lock-confirm')
+      var lockCancel = document.getElementById('lock-cancel')
+
+      function showTooltip() {
+        lockTooltip.classList.add('visible')
+        lockOverlay.classList.add('visible')
+      }
+
+      function hideTooltip() {
+        lockTooltip.classList.remove('visible')
+        lockOverlay.classList.remove('visible')
+      }
+
+      lockBtn.addEventListener('click', function (e) {
+        e.stopPropagation()
+        if (lockTooltip.classList.contains('visible')) {
+          hideTooltip()
+        } else {
+          showTooltip()
+        }
+      })
+
+      lockOverlay.addEventListener('click', hideTooltip)
+      lockCancel.addEventListener('click', hideTooltip)
+
+      lockConfirm.addEventListener('click', function () {
+        localStorage.removeItem(storageKey)
+        window.location.replace('/signin')
+      })
+
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') hideTooltip()
+      })
+    </script>
+    <style is:global>
+      .lock-btn {
+        position: fixed;
+        bottom: var(--space-6);
+        right: var(--space-6);
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(8px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: rgba(255, 255, 255, 0.6);
+        cursor: pointer;
+        z-index: 9999;
+        transition: all var(--transition-fast);
+      }
+      .lock-btn:hover,
+      .lock-btn:focus-visible {
+        background: rgba(255, 255, 255, 0.25);
+        color: rgba(255, 255, 255, 0.9);
+        border-color: rgba(255, 255, 255, 0.4);
+      }
+      .lock-btn:focus-visible {
+        outline: 2px solid var(--color-primary);
+        outline-offset: 3px;
+      }
+      .lock-tooltip {
+        position: absolute;
+        bottom: calc(100% + 12px);
+        right: 0;
+        background: var(--color-white);
+        color: var(--color-body);
+        border-radius: var(--radius-lg);
+        padding: var(--space-4);
+        min-width: 240px;
+        box-shadow: var(--shadow-lg);
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(4px);
+        transition: all var(--transition-fast);
+      }
+      .lock-tooltip.visible {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+      }
+      .lock-tooltip-text {
+        font-size: var(--text-sm);
+        margin-bottom: var(--space-3);
+        color: var(--color-body);
+        line-height: var(--leading-snug);
+      }
+      .lock-tooltip-actions {
+        display: flex;
+        gap: var(--space-2);
+        justify-content: flex-end;
+      }
+      .lock-tooltip-actions button {
+        font-family: var(--font-body);
+        font-size: var(--text-sm);
+        font-weight: var(--weight-semibold);
+        padding: var(--space-1) var(--space-3);
+        border-radius: var(--radius-sm);
+        border: none;
+        cursor: pointer;
+        transition: background var(--transition-fast);
+      }
+      .lock-confirm {
+        background: #d93025;
+        color: white;
+      }
+      .lock-confirm:hover { background: #c5221f; }
+      .lock-cancel {
+        background: var(--color-gray-50);
+        color: var(--color-body);
+      }
+      .lock-cancel:hover { background: var(--color-gray-100); }
+      #lock-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        z-index: 9998;
+      }
+      #lock-overlay.visible { display: block; }
+    </style>
+  </body>
+</html>

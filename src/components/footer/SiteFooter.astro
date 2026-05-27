@@ -1,0 +1,51 @@
+---
+import { SITE_TITLE, FOOTER, CONTACT } from '../../data/siteConfig';
+---
+
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <img
+        src="/images/Novomi-logo-transparent.png"
+        alt="NOVOMI VAX logo"
+        class="footer-logo"
+        width="150"
+        height="30"
+      />
+    </div>
+    <p class="footer-disclaimer">{CONTACT.disclaimer}</p>
+    <p class="footer-copyright">{FOOTER.copyright}</p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background-color: var(--color-off-white);
+    border-top: 1px solid var(--color-gray-50);
+    padding: var(--space-12) 0;
+  }
+
+  .footer-inner {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+  }
+
+  .footer-logo {
+    display: block;
+    height: 30px;
+    width: auto;
+  }
+
+  .footer-disclaimer {
+    font-size: var(--text-xs);
+    color: var(--color-gray-400);
+    line-height: var(--leading-relaxed);
+    max-width: 600px;
+  }
+
+  .footer-copyright {
+    font-size: var(--text-xs);
+    color: var(--color-gray-400);
+  }
+</style>

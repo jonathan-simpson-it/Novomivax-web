@@ -1,0 +1,299 @@
+---
+import { SITE_TITLE, type NavItem, NAV_ITEMS } from '../../data/siteConfig';
+---
+
+<header class="site-header">
+  <div class="container header-inner">
+    <a href="#top" class="logo-link" aria-label="NOVOMI VAX home">
+      <img
+        src="/images/Novomi-logo-transparent.png"
+        alt="NOVOMI VAX logo"
+        class="logo"
+        width="180"
+        height="36"
+      />
+    </a>
+    <button
+      class="menu-toggle"
+      aria-label="Toggle navigation menu"
+      aria-expanded="false"
+      data-menu-toggle
+    >
+      <span class="menu-icon"></span>
+    </button>
+    <nav class="nav" data-nav>
+      <ul class="nav-list nav-list--desktop">
+        {NAV_ITEMS.map((item) => (
+          <li
+            class="nav-item"
+            class:list={item.children ? 'nav-item--has-children' : ''}
+          >
+            {item.children ? (
+              <>
+                <span class="nav-link nav-link--parent">
+                  {item.label}
+                </span>
+                <ul class="nav-dropdown">
+                  {item.children.map((child) => (
+                    <li>
+                      <a href={child.href} class="nav-link nav-link--child"
+                        >{child.label}</a
+                      >
+                    </li>
+                  ))}
+                </ul>
+              </>
+            ) : (
+              <a href={item.href} class="nav-link">{item.label}</a>
+            )}
+          </li>
+        ))}
+      </ul>
+      <ul class="nav-list nav-list--mobile">
+        {NAV_ITEMS.flatMap((item) =>
+          item.children
+            ? item.children.map((child) => (
+                <li class="nav-item">
+                  <a href={child.href} class="nav-link">{child.label}</a>
+                </li>
+              ))
+            : [
+                <li class="nav-item">
+                  <a href={item.href} class="nav-link">{item.label}</a>
+                </li>,
+              ]
+        )}
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background-color: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--color-gray-50);
+  }
+
+  .header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+  }
+
+  .logo-link {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  .logo {
+    display: block;
+    height: 36px;
+    width: auto;
+  }
+
+  .nav-list {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    list-style: none;
+  }
+
+  .nav-link {
+    display: inline-flex;
+    align-items: center;
+    padding: var(--space-2) var(--space-3);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-medium);
+    color: var(--color-body);
+    border-radius: var(--radius-sm);
+    transition: color var(--transition-fast),
+      background-color var(--transition-fast);
+    white-space: nowrap;
+  }
+
+  .nav-link:hover {
+    color: var(--color-primary);
+    background-color: var(--color-off-white);
+  }
+
+  .nav-link--parent {
+    cursor: default;
+  }
+
+  .nav-link--parent::after {
+    content: '▾';
+    display: inline-block;
+    margin-left: 4px;
+    font-size: 0.6em;
+    transition: transform var(--transition-fast);
+  }
+
+  .nav-item--has-children {
+    position: relative;
+  }
+
+  .nav-dropdown {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 50%;
+    transform: translateX(-50%) translateY(4px);
+    background-color: var(--color-white);
+    border: 1px solid var(--color-gray-50);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+    padding: var(--space-2) 0;
+    min-width: 150px;
+    list-style: none;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity var(--transition-fast),
+      transform var(--transition-fast),
+      visibility var(--transition-fast);
+    z-index: 50;
+  }
+
+  .nav-dropdown .nav-link {
+    display: flex;
+    width: 100%;
+    padding: var(--space-2) var(--space-4);
+    border-radius: 0;
+  }
+
+  .nav-item--has-children:hover .nav-dropdown,
+  .nav-item--has-children:focus-within .nav-dropdown {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  .nav-list--mobile {
+    display: none;
+  }
+
+  .menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: var(--space-2);
+    border-radius: var(--radius-sm);
+  }
+
+  .menu-toggle:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+
+  .menu-icon,
+  .menu-icon::before,
+  .menu-icon::after {
+    display: block;
+    width: 24px;
+    height: 2px;
+    background-color: var(--color-body);
+    border-radius: 1px;
+    transition: transform var(--transition-base),
+      opacity var(--transition-base);
+  }
+
+  .menu-icon {
+    position: relative;
+  }
+
+  .menu-icon::before,
+  .menu-icon::after {
+    content: '';
+    position: absolute;
+    left: 0;
+  }
+
+  .menu-icon::before {
+    top: -7px;
+  }
+
+  .menu-icon::after {
+    top: 7px;
+  }
+
+  .menu-toggle[aria-expanded='true'] .menu-icon {
+    background-color: transparent;
+  }
+
+  .menu-toggle[aria-expanded='true'] .menu-icon::before {
+    transform: translateY(7px) rotate(45deg);
+  }
+
+  .menu-toggle[aria-expanded='true'] .menu-icon::after {
+    transform: translateY(-7px) rotate(-45deg);
+  }
+
+  @media (max-width: 768px) {
+    .menu-toggle {
+      display: flex;
+    }
+
+    .nav {
+      position: fixed;
+      top: 64px;
+      left: 0;
+      right: 0;
+      background-color: var(--color-white);
+      border-bottom: 1px solid var(--color-gray-50);
+      padding: var(--space-4);
+      transform: translateY(-100%);
+      opacity: 0;
+      visibility: hidden;
+      transition: transform var(--transition-base),
+        opacity var(--transition-base), visibility var(--transition-base);
+    }
+
+    .nav.open {
+      transform: translateY(0);
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .nav-list--desktop {
+      display: none !important;
+    }
+
+    .nav-list--mobile {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-1);
+    }
+
+    .nav-link {
+      width: 100%;
+      padding: var(--space-3) var(--space-4);
+    }
+  }
+</style>
+
+<script>
+  const toggle = document.querySelector('[data-menu-toggle]');
+  const nav = document.querySelector('[data-nav]');
+
+  if (toggle && nav) {
+    toggle.addEventListener('click', () => {
+      const expanded = toggle.getAttribute('aria-expanded') === 'true';
+      toggle.setAttribute('aria-expanded', String(!expanded));
+      nav.classList.toggle('open');
+    });
+
+    document.querySelectorAll('.nav-link').forEach((link) => {
+      link.addEventListener('click', () => {
+        toggle.setAttribute('aria-expanded', 'false');
+        nav.classList.remove('open');
+      });
+    });
+  }
+</script>

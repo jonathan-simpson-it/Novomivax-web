@@ -1,0 +1,73 @@
+---
+import { WHO_WE_ARE } from '../../data/siteConfig';
+---
+
+<section id="who-we-are" class="section">
+  <div class="container who-we-are-grid">
+    <div class="who-we-are-text reveal-on-scroll">
+      <h2>{WHO_WE_ARE.heading}</h2>
+      <p>{WHO_WE_ARE.paragraph}</p>
+    </div>
+    <div class="who-we-are-facts reveal-on-scroll">
+      {WHO_WE_ARE.facts.map((fact) => (
+        <div class="fact-item">
+          <span class="fact-label">{fact.label}</span>
+          <span class="fact-value">{fact.value}</span>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .who-we-are-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-16);
+    align-items: start;
+  }
+
+  .who-we-are-text h2 {
+    margin-bottom: var(--space-6);
+  }
+
+  .who-we-are-text p {
+    color: var(--color-body-secondary);
+  }
+
+  .who-we-are-facts {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    border-top: 1px solid var(--color-gray-50);
+  }
+
+  .fact-item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    padding: var(--space-6) 0;
+    border-bottom: 1px solid var(--color-gray-50);
+  }
+
+  .fact-label {
+    font-size: var(--text-xs);
+    font-weight: var(--weight-semibold);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--color-primary);
+  }
+
+  .fact-value {
+    font-size: var(--text-base);
+    color: var(--color-body);
+    line-height: var(--leading-snug);
+  }
+
+  @media (max-width: 768px) {
+    .who-we-are-grid {
+      grid-template-columns: 1fr;
+      gap: var(--space-8);
+    }
+  }
+</style>

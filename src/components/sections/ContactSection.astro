@@ -1,0 +1,177 @@
+---
+import { CONTACT } from '../../data/siteConfig';
+
+const phone1Href = CONTACT.phone1.replace(/[^+\d]/g, '');
+const phone2Href = CONTACT.phone2.replace(/[^+\d]/g, '');
+---
+
+<section id="contact" class="section section-dark">
+  <div class="container">
+    <div class="contact-grid">
+      <div class="contact-info reveal-on-scroll">
+        <h2>{CONTACT.heading}</h2>
+        <p>{CONTACT.paragraph}</p>
+        <p class="contact-name">{CONTACT.name}</p>
+        <p class="contact-phone">
+          <a href={'tel:' + phone1Href} class="phone-link"
+            >{CONTACT.phone1}</a
+          >
+          <span class="phone-sep">/</span>
+          <a href={'tel:' + phone2Href} class="phone-link"
+            >{CONTACT.phone2}</a
+          >
+        </p>
+        <p class="contact-email">
+          <a href="mailto:{CONTACT.email}" class="email-link"
+            >{CONTACT.email}</a
+          >
+        </p>
+        <p class="contact-note">{CONTACT.responseNote}</p>
+      </div>
+      <form class="contact-form reveal-on-scroll" method="POST" action={`mailto:${CONTACT.email}`}>
+        <div class="form-group">
+          <label for="name" class="form-label">Name</label>
+          <input
+            type="text"
+            id="name"
+            name="name"
+            class="form-input"
+            required
+            autocomplete="name"
+          />
+        </div>
+        <div class="form-group">
+          <label for="email" class="form-label">Email</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            class="form-input"
+            required
+            autocomplete="email"
+          />
+        </div>
+        <div class="form-group">
+          <label for="message" class="form-label">Message</label>
+          <textarea
+            id="message"
+            name="message"
+            class="form-input form-textarea"
+            rows="4"
+            required
+          ></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Send Message</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<style>
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-16);
+    align-items: start;
+  }
+
+  .contact-info h2 {
+    margin-bottom: var(--space-6);
+    color: var(--color-white);
+  }
+
+  .contact-info p {
+    color: var(--color-dark-text);
+  }
+
+  .contact-name {
+    margin-top: var(--space-6);
+    font-size: var(--text-xl);
+    font-weight: var(--weight-semibold);
+    color: var(--color-white);
+  }
+
+  .contact-phone {
+    margin-top: var(--space-2);
+  }
+
+  .phone-link {
+    font-size: var(--text-base);
+    color: var(--color-primary-light);
+  }
+
+  .phone-sep {
+    margin: 0 var(--space-2);
+    color: var(--color-gray-400);
+  }
+
+  .contact-email {
+    margin-top: var(--space-2);
+  }
+
+  .email-link {
+    font-size: var(--text-lg);
+    font-weight: var(--weight-medium);
+  }
+
+  .contact-note {
+    font-size: var(--text-sm);
+    color: var(--color-gray-400);
+  }
+
+  .contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .form-label {
+    font-size: var(--text-sm);
+    font-weight: var(--weight-medium);
+    color: var(--color-dark-text);
+  }
+
+  .form-input {
+    font-family: var(--font-body);
+    font-size: var(--text-base);
+    padding: var(--space-3) var(--space-4);
+    border: 1px solid var(--color-gray-600);
+    border-radius: var(--radius-md);
+    background-color: rgba(255, 255, 255, 0.05);
+    color: var(--color-white);
+    transition: border-color var(--transition-fast),
+      background-color var(--transition-fast);
+  }
+
+  .form-input::placeholder {
+    color: var(--color-gray-400);
+  }
+
+  .form-input:focus {
+    outline: none;
+    border-color: var(--color-primary-light);
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .form-textarea {
+    resize: vertical;
+    min-height: 100px;
+  }
+
+  .contact-form .btn-primary {
+    align-self: flex-start;
+  }
+
+  @media (max-width: 768px) {
+    .contact-grid {
+      grid-template-columns: 1fr;
+      gap: var(--space-8);
+    }
+  }
+</style>
