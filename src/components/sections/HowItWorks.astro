@@ -1,5 +1,6 @@
 ---
 import { HOW_IT_WORKS } from '../../data/siteConfig';
+const base = import.meta.env.BASE_URL
 
 const stages = HOW_IT_WORKS.stages;
 ---
@@ -127,12 +128,12 @@ const stages = HOW_IT_WORKS.stages;
         <div class="video-wrapper">
           <video
             autoplay muted loop playsinline
-            poster="/videos/how-it-works-poster.jpg"
+            poster={base + 'videos/how-it-works-poster.jpg'}
             preload="none"
             class="how-video"
           >
-            <source src="/videos/how-it-works.webm" type="video/webm" />
-            <source src="/videos/how-it-works.mp4" type="video/mp4" />
+            <source src={base + 'videos/how-it-works.webm'} type="video/webm" />
+            <source src={base + 'videos/how-it-works.mp4'} type="video/mp4" />
           </video>
         </div>
       </div>

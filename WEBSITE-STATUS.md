@@ -8,6 +8,26 @@ This progress report follows the initial build and your feedback, which has now 
 
 ---
 
+## Access Code
+
+The site is protected behind a sign-in page. The access code is:
+
+> # `NOVOMI-VAX-2026-X7K9M`
+
+**How to access:**  
+Visit the site → you'll be redirected to `/signin` → enter the code above → full site unlocks.
+
+**To change it:**  
+Set the `PUBLIC_ACCESS_CODE` secret in GitHub repo settings (Settings → Secrets and variables → Actions).
+
+---
+
+## Live Site
+
+**https://jonathan-simpson-it.github.io/Novomivax-web/** ✅
+
+---
+
 ## What's still needed
 
 ### Would you like to provide?
@@ -34,7 +54,7 @@ This progress report follows the initial build and your feedback, which has now 
 
 9. **Font check** — The Raleway font is self-hosted as a slim subset. Worth checking the rendering and deciding if you want a richer font setup.
 
-10. **GitHub Pages deployment** — The site is built and ready at `https://jonathan-simpson-it.github.io/Novomivax-web/` but has not yet been pushed to GitHub Pages (the GitHub Actions workflow on `master` needs a first push to trigger deployment).
+10. **GitHub Pages deployment** — ✅ **Done.** Live at `https://jonathan-simpson-it.github.io/Novomivax-web/`.
 
 ---
 

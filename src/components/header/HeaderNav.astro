@@ -1,12 +1,13 @@
 ---
 import { SITE_TITLE, type NavItem, NAV_ITEMS } from '../../data/siteConfig';
+const base = import.meta.env.BASE_URL
 ---
 
 <header class="site-header">
   <div class="container header-inner">
     <a href="#top" class="logo-link" aria-label="NOVOMI VAX home">
       <img
-        src="/images/Novomi-logo-transparent.png"
+        src={base + 'images/Novomi-logo-transparent.png'}
         alt="NOVOMI VAX logo"
         class="logo"
         width="180"

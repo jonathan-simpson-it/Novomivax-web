@@ -1,12 +1,13 @@
 ---
 import { MISSION } from '../../data/siteConfig';
+const base = import.meta.env.BASE_URL
 ---
 
 <section id="mission" class="section section-alt">
   <div class="container mission-grid">
     <div class="mission-image reveal-on-scroll">
       <img
-        src="/images/mission-microscope.jpg"
+        src={base + 'images/mission-microscope.jpg'}
         alt="Laboratory microscope used in scientific research"
         class="mission-img"
         width="630"

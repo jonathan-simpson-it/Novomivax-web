@@ -2,6 +2,7 @@
 import crypto from 'node:crypto'
 import '../styles/global.css'
 
+const base = import.meta.env.BASE_URL
 const ACCESS_CODE = import.meta.env.PUBLIC_ACCESS_CODE || 'NOVOMI-VAX-2026-X7K9M'
 const accessHash = crypto.createHash('sha256').update(ACCESS_CODE).digest('hex')
 const storageKey = 'novomi_access_token'
@@ -13,20 +14,20 @@ const storageKey = 'novomi_access_token'
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Sign In · NOVOMI VAX</title>
-    <link rel="icon" type="image/png" href="/images/Novomi-logo.png" />
+    <link rel="icon" type="image/png" href={base + 'images/Novomi-logo.png'} />
     <link
       rel="preload"
       as="font"
       type="font/woff2"
       crossorigin
-      href="/fonts/raleway-latin.woff2"
+      href={base + 'fonts/raleway-latin.woff2'}
     />
   </head>
   <body>
     <div class="signin-page">
       <div class="signin-card">
         <img
-          src="/images/Novomi-logo-transparent.png"
+          src={base + 'images/Novomi-logo-transparent.png'}
           alt="NOVOMI VAX"
           class="signin-logo"
         />

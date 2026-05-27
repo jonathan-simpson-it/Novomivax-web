@@ -1,5 +1,6 @@
 ---
 import { HERO } from '../../data/siteConfig';
+const base = import.meta.env.BASE_URL
 ---
 
 <section id="top" class="hero">
@@ -13,7 +14,7 @@ import { HERO } from '../../data/siteConfig';
       poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1920' height='1080'%3E%3Crect fill='%230d1520' width='1920' height='1080'/%3E%3C/svg%3E"
       class="hero-video"
     >
-      <source src="/videos/hero-background.mp4" type="video/mp4" />
+      <source src={base + 'videos/hero-background.mp4'} type="video/mp4" />
     </video>
     <div class="hero-overlay"></div>
   </div>
