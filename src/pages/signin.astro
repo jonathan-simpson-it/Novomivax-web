@@ -53,7 +53,7 @@ const storageKey = 'novomi_access_token'
         </form>
       </div>
     </div>
-    <script is:inline define:vars={{ accessHash: accessHash, storageKey: storageKey }}>
+    <script is:inline define:vars={{ accessHash: accessHash, storageKey: storageKey, baseUrl: import.meta.env.BASE_URL }}>
       // @ts-nocheck
 
       function sha256(s) {
@@ -139,7 +139,7 @@ const storageKey = 'novomi_access_token'
           if (hash === accessHash) {
             localStorage.setItem(storageKey, hash)
             submitBtn.textContent = 'Success!'
-            window.location.replace('/')
+            window.location.replace(baseUrl)
           } else {
             errorEl.classList.add('visible')
             input.classList.add('error')
@@ -157,7 +157,7 @@ const storageKey = 'novomi_access_token'
       }
 
       if (localStorage.getItem(storageKey) === accessHash) {
-        window.location.replace('/')
+        window.location.replace(baseUrl)
       }
     </script>
     <style is:global>
