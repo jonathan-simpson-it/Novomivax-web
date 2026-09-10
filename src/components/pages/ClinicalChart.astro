@@ -1,0 +1,222 @@
+---
+export interface ChartData {
+  title: string;
+  rangeLabel: string;
+  from: string;
+  to: string;
+  threshold: string;
+  patients: readonly { label: string; value: string; detail: string }[];
+}
+
+interface Props {
+  data: ChartData;
+}
+
+const { data } = Astro.props;
+---
+
+<div class="clinical-chart reveal-on-scroll">
+  <p class="chart-title">{data.title}</p>
+
+  <div class="chart-range-block">
+    <div class="chart-range-meta">
+      <span>{data.rangeLabel}</span>
+      <span class="chart-range-values">
+        <strong>{data.from}</strong>
+        <span aria-hidden="true">→</span>
+        <strong>{data.to}</strong>
+      </span>
+    </div>
+    <div class="chart-range-track">
+      <div class="chart-range-fill"></div>
+      <div class="chart-range-marker" aria-hidden="true">
+        <span class="chart-range-marker-label">{data.threshold}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="chart-patients">
+    {data.patients.map((patient, i) => (
+      <div class="chart-patient">
+        <div class="chart-patient-head">
+          <span class="chart-patient-label">{patient.label}</span>
+          <strong class="chart-patient-value">{patient.value}</strong>
+        </div>
+        <div class="chart-patient-track">
+          <div class="chart-patient-fill" style={`--patient-fill: ${i === 0 ? '100%' : '55%'}`}></div>
+        </div>
+        <span class="chart-patient-detail">{patient.detail}</span>
+      </div>
+    ))}
+  </div>
+</div>
+
+<style>
+  .clinical-chart {
+    background-color: var(--color-dark-bg);
+    border-radius: var(--radius-xl);
+    padding: clamp(1.5rem, 4vw, 2.5rem);
+    color: var(--color-dark-text);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
+  }
+
+  .chart-title {
+    font-family: var(--font-display);
+    font-weight: var(--weight-semibold);
+    font-size: var(--text-lg);
+    color: var(--color-white);
+    margin: 0;
+  }
+
+  .chart-range-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: var(--space-4);
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--color-dark-muted);
+    margin-bottom: var(--space-4);
+  }
+
+  .chart-range-values {
+    display: inline-flex;
+    align-items: baseline;
+    gap: var(--space-3);
+    color: var(--color-dark-muted);
+  }
+
+  .chart-range-values strong {
+    font-family: var(--font-display);
+    font-size: 1.6rem;
+    font-weight: var(--weight-bold);
+    color: var(--color-primary-light);
+  }
+
+  .chart-range-track {
+    position: relative;
+    height: 14px;
+    border-radius: var(--radius-pill);
+    background: rgba(232, 234, 237, 0.1);
+    overflow: visible;
+  }
+
+  .chart-range-fill {
+    height: 100%;
+    width: 0;
+    border-radius: var(--radius-pill);
+    background: linear-gradient(90deg, var(--color-primary), var(--color-primary-light));
+    transition: width 1.6s var(--ease-out-quart);
+  }
+
+  .is-visible .chart-range-fill {
+    width: 100%;
+  }
+
+  .chart-range-marker {
+    position: absolute;
+    top: -6px;
+    bottom: -6px;
+    left: 27%;
+    width: 2px;
+    background: rgba(255, 255, 255, 0.55);
+    border-radius: 1px;
+  }
+
+  .chart-range-marker::after {
+    content: '';
+    position: absolute;
+    top: -3px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--color-white);
+  }
+
+  .chart-range-marker-label {
+    position: absolute;
+    top: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    font-size: 0.66rem;
+    font-weight: var(--weight-medium);
+    letter-spacing: 0.04em;
+    color: rgba(255, 255, 255, 0.85);
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    padding: 0.3rem 0.6rem;
+    border-radius: var(--radius-pill);
+  }
+
+  .chart-patients {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-6);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: var(--space-6);
+  }
+
+  .chart-patient-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: var(--space-4);
+    margin-bottom: var(--space-3);
+  }
+
+  .chart-patient-label {
+    font-size: var(--text-sm);
+    color: var(--color-dark-text);
+  }
+
+  .chart-patient-value {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: var(--weight-bold);
+    color: var(--color-primary-light);
+  }
+
+  .chart-patient-track {
+    height: 8px;
+    border-radius: var(--radius-pill);
+    background: rgba(232, 234, 237, 0.1);
+    margin-bottom: var(--space-3);
+  }
+
+  .chart-patient-fill {
+    height: 100%;
+    width: 0;
+    border-radius: var(--radius-pill);
+    background: linear-gradient(90deg, var(--color-primary), var(--color-primary-light));
+    transition: width 1.4s var(--ease-out-quart);
+    transition-delay: 0.25s;
+  }
+
+  .is-visible .chart-patient-fill {
+    width: var(--patient-fill);
+  }
+
+  .chart-patient-detail {
+    font-size: var(--text-xs);
+    color: var(--color-dark-muted);
+    line-height: var(--leading-snug);
+  }
+
+  @media (max-width: 640px) {
+    .chart-patients {
+      grid-template-columns: 1fr;
+    }
+
+    .chart-range-marker-label {
+      white-space: normal;
+      width: 110px;
+      text-align: center;
+    }
+  }
+</style>

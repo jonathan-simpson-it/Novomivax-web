@@ -1,71 +1,81 @@
 ---
-import { SITE_TITLE, type NavItem, NAV_ITEMS } from '../../data/siteConfig';
-const base = import.meta.env.BASE_URL
+import { dict, type Lang, langPath, PAGE_ROUTES } from '../../i18n';
+
+interface Props {
+  lang?: Lang;
+}
+
+const { lang = 'en' } = Astro.props;
+const t = dict(lang);
+const base = import.meta.env.BASE_URL;
+const pathname = Astro.url.pathname;
+
+function isActive(routePath: string): boolean {
+  const current = pathname.replace(/\/$/, '');
+  if (routePath === '') {
+    return current === base.replace(/\/$/, '') || current === base.replace(/\/$/, '') + '/';
+  }
+  const target = langPath(lang, routePath).replace(/\/$/, '');
+  return current === target;
+}
+
+const navItems = [
+  { label: t.nav.home, path: '' },
+  { label: t.nav.about, path: 'about/' },
+  { label: t.nav.technology, path: 'technology/' },
+  { label: t.nav.pipeline, path: 'pipeline/' },
+  { label: t.nav.clinicalData, path: 'clinical-data/' },
+  { label: t.nav.team, path: 'team/' },
+  { label: t.nav.contact, path: 'contact/' },
+];
+
+const otherLang: Lang = lang === 'en' ? 'zh' : 'en';
+const otherHref = langPath(otherLang, pathname.replace(base, '').replace(/^zh\//, ''));
 ---
 
 <header class="site-header">
   <div class="container header-inner">
-    <a href="#top" class="logo-link" aria-label="NOVOMI VAX home">
+    <a href={langPath(lang, '')} class="logo-link" aria-label={`${t.meta.siteName} home`}>
       <img
         src={base + 'images/Novomi-logo-transparent.png'}
-        alt="NOVOMI VAX logo"
+        alt={`${t.meta.siteName} logo`}
         class="logo"
-        width="180"
-        height="36"
+        width="168"
+        height="34"
       />
     </a>
     <button
       class="menu-toggle"
-      aria-label="Toggle navigation menu"
+      aria-label={t.nav.menuLabel}
       aria-expanded="false"
       data-menu-toggle
     >
       <span class="menu-icon"></span>
     </button>
-    <nav class="nav" data-nav>
+    <nav class="nav" data-nav aria-label="Primary">
       <ul class="nav-list nav-list--desktop">
-        {NAV_ITEMS.map((item) => (
-          <li
-            class="nav-item"
-            class:list={item.children ? 'nav-item--has-children' : ''}
-          >
-            {item.children ? (
-              <>
-                <span class="nav-link nav-link--parent">
-                  {item.label}
-                </span>
-                <ul class="nav-dropdown">
-                  {item.children.map((child) => (
-                    <li>
-                      <a href={child.href} class="nav-link nav-link--child"
-                        >{child.label}</a
-                      >
-                    </li>
-                  ))}
-                </ul>
-              </>
-            ) : (
-              <a href={item.href} class="nav-link">{item.label}</a>
-            )}
+        {navItems.map((item) => (
+          <li class:list={['nav-item', isActive(item.path) && 'nav-item--active']}>
+            <a href={langPath(lang, item.path)} class="nav-link">{item.label}</a>
           </li>
         ))}
       </ul>
       <ul class="nav-list nav-list--mobile">
-        {NAV_ITEMS.flatMap((item) =>
-          item.children
-            ? item.children.map((child) => (
-                <li class="nav-item">
-                  <a href={child.href} class="nav-link">{child.label}</a>
-                </li>
-              ))
-            : [
-                <li class="nav-item">
-                  <a href={item.href} class="nav-link">{item.label}</a>
-                </li>,
-              ]
-        )}
+        {navItems.map((item) => (
+          <li class:list={['nav-item', isActive(item.path) && 'nav-item--active']}>
+            <a href={langPath(lang, item.path)} class="nav-link">{item.label}</a>
+          </li>
+        ))}
+        <li class="nav-item">
+          <a href={otherHref} class="nav-link nav-link--lang" data-lang-switch hreflang={otherLang === 'zh' ? 'zh-CN' : 'en'}>
+            {t.nav.switchLang}
+          </a>
+        </li>
       </ul>
     </nav>
+    <a href={otherHref} class="lang-toggle" data-lang-switch hreflang={otherLang === 'zh' ? 'zh-CN' : 'en'} aria-label={`${t.nav.switchLang} | ${t.nav.switchLangLabel}`}>
+      {t.nav.switchLang}
+    </a>
   </div>
 </header>
 
@@ -75,9 +85,10 @@ const base = import.meta.env.BASE_URL
     top: 0;
     left: 0;
     right: 0;
-    z-index: 100;
-    background-color: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(8px);
+    z-index: var(--z-header);
+    background-color: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     border-bottom: 1px solid var(--color-gray-50);
   }
 
@@ -85,7 +96,8 @@ const base = import.meta.env.BASE_URL
     display: flex;
     align-items: center;
     justify-content: space-between;
-    height: 64px;
+    gap: var(--space-4);
+    height: 68px;
   }
 
   .logo-link {
@@ -95,27 +107,27 @@ const base = import.meta.env.BASE_URL
   }
 
   .logo {
-    display: block;
-    height: 36px;
+    height: 34px;
     width: auto;
   }
 
   .nav-list {
     display: flex;
     align-items: center;
-    gap: var(--space-1);
+    gap: 2px;
     list-style: none;
   }
 
   .nav-link {
     display: inline-flex;
     align-items: center;
-    padding: var(--space-2) var(--space-3);
-    font-size: var(--text-sm);
+    padding: 0.45rem 0.7rem;
+    font-size: 0.86rem;
     font-weight: var(--weight-medium);
     color: var(--color-body);
     border-radius: var(--radius-sm);
-    transition: color var(--transition-fast),
+    transition:
+      color var(--transition-fast),
       background-color var(--transition-fast);
     white-space: nowrap;
   }
@@ -125,58 +137,40 @@ const base = import.meta.env.BASE_URL
     background-color: var(--color-off-white);
   }
 
-  .nav-link--parent {
-    cursor: default;
+  .nav-item--active .nav-link {
+    color: var(--color-primary);
   }
 
-  .nav-link--parent::after {
-    content: '▾';
-    display: inline-block;
-    margin-left: 4px;
-    font-size: 0.6em;
-    transition: transform var(--transition-fast);
+  .nav-item--active .nav-link::after {
+    content: '';
+    display: block;
+    height: 2px;
+    border-radius: 1px;
+    background: var(--color-primary);
+    margin: 3px auto 0;
+    width: 60%;
   }
 
-  .nav-item--has-children {
-    position: relative;
+  .lang-toggle {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    padding: 0.4rem 0.9rem;
+    border: 1px solid var(--color-gray-100);
+    border-radius: var(--radius-pill);
+    font-size: 0.8rem;
+    font-weight: var(--weight-semibold);
+    color: var(--color-body);
+    transition:
+      border-color var(--transition-fast),
+      color var(--transition-fast),
+      background-color var(--transition-fast);
   }
 
-  .nav-dropdown {
-    position: absolute;
-    top: calc(100% + 4px);
-    left: 50%;
-    transform: translateX(-50%) translateY(4px);
-    background-color: var(--color-white);
-    border: 1px solid var(--color-gray-50);
-    border-radius: var(--radius-md);
-    box-shadow: var(--shadow-md);
-    padding: var(--space-2) 0;
-    min-width: 150px;
-    list-style: none;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity var(--transition-fast),
-      transform var(--transition-fast),
-      visibility var(--transition-fast);
-    z-index: 50;
-  }
-
-  .nav-dropdown .nav-link {
-    display: flex;
-    width: 100%;
-    padding: var(--space-2) var(--space-4);
-    border-radius: 0;
-  }
-
-  .nav-item--has-children:hover .nav-dropdown,
-  .nav-item--has-children:focus-within .nav-dropdown {
-    opacity: 1;
-    visibility: visible;
-    transform: translateX(-50%) translateY(0);
-  }
-
-  .nav-list--mobile {
-    display: none;
+  .lang-toggle:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+    background-color: var(--color-primary-soft);
   }
 
   .menu-toggle {
@@ -188,11 +182,6 @@ const base = import.meta.env.BASE_URL
     border-radius: var(--radius-sm);
   }
 
-  .menu-toggle:focus-visible {
-    outline: 2px solid var(--color-primary);
-    outline-offset: 2px;
-  }
-
   .menu-icon,
   .menu-icon::before,
   .menu-icon::after {
@@ -201,7 +190,8 @@ const base = import.meta.env.BASE_URL
     height: 2px;
     background-color: var(--color-body);
     border-radius: 1px;
-    transition: transform var(--transition-base),
+    transition:
+      transform var(--transition-base),
       opacity var(--transition-base);
   }
 
@@ -236,24 +226,41 @@ const base = import.meta.env.BASE_URL
     transform: translateY(-7px) rotate(-45deg);
   }
 
-  @media (max-width: 768px) {
+  .nav-list--mobile {
+    display: none;
+  }
+
+  @media (max-width: 1080px) {
+    .nav-list--desktop {
+      display: none;
+    }
+
     .menu-toggle {
       display: flex;
     }
 
+    .lang-toggle {
+      display: none;
+    }
+
     .nav {
       position: fixed;
-      top: 64px;
+      top: 68px;
       left: 0;
       right: 0;
       background-color: var(--color-white);
       border-bottom: 1px solid var(--color-gray-50);
       padding: var(--space-4);
-      transform: translateY(-100%);
+      transform: translateY(-8px);
       opacity: 0;
       visibility: hidden;
-      transition: transform var(--transition-base),
-        opacity var(--transition-base), visibility var(--transition-base);
+      transition:
+        transform var(--transition-base),
+        opacity var(--transition-base),
+        visibility var(--transition-base);
+      box-shadow: var(--shadow-md);
+      max-height: calc(100vh - 68px);
+      overflow-y: auto;
     }
 
     .nav.open {
@@ -262,19 +269,24 @@ const base = import.meta.env.BASE_URL
       visibility: visible;
     }
 
-    .nav-list--desktop {
-      display: none !important;
-    }
-
     .nav-list--mobile {
       display: flex;
       flex-direction: column;
-      gap: var(--space-1);
+      gap: 2px;
     }
 
-    .nav-link {
+    .nav-list--mobile .nav-link {
       width: 100%;
-      padding: var(--space-3) var(--space-4);
+      padding: 0.8rem var(--space-4);
+      font-size: var(--text-base);
+    }
+
+    .nav-list--mobile .nav-item--active .nav-link {
+      background-color: var(--color-primary-soft);
+    }
+
+    .nav-list--mobile .nav-item--active .nav-link::after {
+      display: none;
     }
   }
 </style>
@@ -288,13 +300,32 @@ const base = import.meta.env.BASE_URL
       const expanded = toggle.getAttribute('aria-expanded') === 'true';
       toggle.setAttribute('aria-expanded', String(!expanded));
       nav.classList.toggle('open');
+      document.body.style.overflow = expanded ? '' : 'hidden';
     });
 
-    document.querySelectorAll('.nav-link').forEach((link) => {
+    nav.querySelectorAll('a').forEach((link) => {
       link.addEventListener('click', () => {
         toggle.setAttribute('aria-expanded', 'false');
         nav.classList.remove('open');
+        document.body.style.overflow = '';
       });
     });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        toggle.setAttribute('aria-expanded', 'false');
+        nav.classList.remove('open');
+        document.body.style.overflow = '';
+      }
+    });
   }
+
+  // Preserve scroll position across language switches
+  document.querySelectorAll('[data-lang-switch]').forEach((link) => {
+    link.addEventListener('click', () => {
+      try {
+        sessionStorage.setItem('novomi_scroll', String(window.scrollY));
+      } catch (e) {}
+    });
+  });
 </script>

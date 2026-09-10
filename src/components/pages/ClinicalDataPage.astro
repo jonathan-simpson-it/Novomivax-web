@@ -1,0 +1,182 @@
+---
+import type { Lang } from '../../i18n';
+import { dict, langPath } from '../../i18n';
+import PageHero from './PageHero.astro';
+import ClinicalChart from './ClinicalChart.astro';
+import CtaBand from './CtaBand.astro';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = dict(lang);
+---
+
+<PageHero
+  lang={lang}
+  eyebrow={t.clinical.hero.eyebrow}
+  title={t.clinical.hero.title}
+  intro={t.clinical.hero.intro}
+/>
+
+<!-- NV-001 -->
+<section class="section">
+  <div class="container">
+    <div class="section-head reveal-on-scroll">
+      <p class="eyebrow">{t.clinical.nv001.eyebrow}</p>
+      <h2>{t.clinical.nv001.heading}</h2>
+      <p>{t.clinical.nv001.intro}</p>
+    </div>
+
+    <ClinicalChart data={t.clinical.nv001.chart} />
+
+    <ul class="evidence-list reveal-on-scroll">
+      {t.clinical.nv001.bullets.map((bullet) => (
+        <li>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true">
+            <path d="M4 12l5 5L20 7"/>
+          </svg>
+          {bullet}
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<!-- NV-003 -->
+<section class="section section-alt">
+  <div class="container">
+    <div class="section-head reveal-on-scroll">
+      <p class="eyebrow">{t.clinical.nv003.eyebrow}</p>
+      <h2>{t.clinical.nv003.heading}</h2>
+      <p>{t.clinical.nv003.intro}</p>
+    </div>
+    <div class="preclinical-grid">
+      <div class="preclinical-stat reveal-on-scroll">
+        <span class="preclinical-value">6+</span>
+        <span class="preclinical-label">primary tumour models</span>
+      </div>
+      <div class="preclinical-stat reveal-on-scroll">
+        <span class="preclinical-value">2</span>
+        <span class="preclinical-label">metastasis models</span>
+      </div>
+      <div class="preclinical-stat reveal-on-scroll">
+        <span class="preclinical-value">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="9"/>
+            <path d="M3 12h18M12 3c3 3.5 3 14 0 18M12 3c-3 3.5-3 14 0 18"/>
+          </svg>
+        </span>
+        <span class="preclinical-label">systemic effect demonstrated</span>
+      </div>
+    </div>
+    <ul class="evidence-list reveal-on-scroll">
+      {t.clinical.nv003.points.map((point) => (
+        <li>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true">
+            <path d="M4 12l5 5L20 7"/>
+          </svg>
+          {point}
+        </li>
+      ))}
+    </ul>
+    <p class="clinical-disclaimer reveal-on-scroll">{t.clinical.disclaimer}</p>
+  </div>
+</section>
+
+<CtaBand
+  heading={t.clinical.ctaBand.heading}
+  primary={{ label: t.clinical.ctaBand.primary, href: langPath(lang, 'pipeline/') }}
+  secondary={{ label: t.clinical.ctaBand.secondary, href: langPath(lang, 'contact/') }}
+/>
+
+<style>
+  .evidence-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    margin-top: var(--space-10);
+    max-width: 640px;
+  }
+
+  .evidence-list li {
+    position: relative;
+    padding-left: var(--space-8);
+    color: var(--color-body-secondary);
+    font-size: var(--text-sm);
+    line-height: var(--leading-snug);
+  }
+
+  .evidence-list svg {
+    position: absolute;
+    left: 0;
+    top: 0.1em;
+    width: 18px;
+    height: 18px;
+    color: var(--color-primary);
+  }
+
+  .preclinical-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: var(--space-6);
+    margin-bottom: var(--space-6);
+  }
+
+  .preclinical-stat {
+    background-color: var(--color-white);
+    border: 1px solid var(--color-gray-50);
+    border-radius: var(--radius-xl);
+    padding: var(--space-8);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    align-items: flex-start;
+    transition: transform var(--transition-base), box-shadow var(--transition-base);
+  }
+
+  .preclinical-stat:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+  }
+
+  .preclinical-value {
+    font-family: var(--font-display);
+    font-size: 2.6rem;
+    font-weight: var(--weight-bold);
+    color: var(--color-primary);
+    line-height: 1;
+  }
+
+  .preclinical-value svg {
+    width: 44px;
+    height: 44px;
+  }
+
+  .preclinical-label {
+    font-size: var(--text-sm);
+    color: var(--color-body-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: var(--weight-semibold);
+    font-size: 0.78rem;
+  }
+
+  .clinical-disclaimer {
+    font-size: var(--text-xs);
+    color: var(--color-gray-500);
+    margin-top: var(--space-10);
+    padding-top: var(--space-6);
+    border-top: 1px solid var(--color-gray-50);
+    max-width: 72ch;
+  }
+
+  @media (max-width: 900px) {
+    .preclinical-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

@@ -1,0 +1,369 @@
+---
+import type { Lang } from '../../i18n';
+import { dict, langPath } from '../../i18n';
+import PageHero from './PageHero.astro';
+import CtaBand from './CtaBand.astro';
+import SectionHead from './SectionHead.astro';
+import MechanismFlow from './MechanismFlow.astro';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = dict(lang);
+---
+
+<PageHero
+  lang={lang}
+  eyebrow={t.technology.hero.eyebrow}
+  title={t.technology.hero.title}
+  intro={t.technology.hero.intro}
+/>
+
+<!-- Overview -->
+<section class="section">
+  <div class="container overview-block reveal-on-scroll">
+    <p class="eyebrow">{t.technology.overview.eyebrow}</p>
+    <h2 class="overview-heading">{t.technology.overview.heading}</h2>
+    <p class="overview-text">{t.technology.overview.text}</p>
+  </div>
+</section>
+
+<!-- BSTCV -->
+<section class="section section-alt platform-detail">
+  <div class="container">
+    <div class="platform-detail-card reveal-on-scroll">
+      <div class="platform-detail-head">
+        <div>
+          <p class="eyebrow">{t.technology.bstcv.eyebrow}</p>
+          <h2 class="platform-detail-name">
+            {t.technology.bstcv.name}
+            <span class="platform-detail-full">{t.technology.bstcv.fullName}</span>
+          </h2>
+        </div>
+        <span class="chip">{t.technology.bstcv.tag}</span>
+      </div>
+
+      <div class="platform-detail-grid">
+        <div class="platform-detail-copy">
+          <div class="detail-block">
+            <h3>{t.technology.bstcv.scenarios.heading}</h3>
+            <ul class="detail-list">
+              {t.technology.bstcv.scenarios.items.map((item) => (
+                <li>{item}</li>
+              ))}
+            </ul>
+          </div>
+          <div class="detail-block">
+            <h3>{t.technology.bstcv.mechanism.heading}</h3>
+            <p class="detail-text">{t.technology.bstcv.mechanism.text}</p>
+          </div>
+          <div class="detail-block">
+            <h3>{t.technology.bstcv.advantages.heading}</h3>
+            <ul class="detail-list detail-list--check">
+              {t.technology.bstcv.advantages.items.map((item) => (
+                <li>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true">
+                    <path d="M4 12l5 5L20 7"/>
+                  </svg>
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div class="detail-block detail-block--data">
+            <h3>{t.technology.bstcv.data.heading}</h3>
+            <p>{t.technology.bstcv.data.text}</p>
+          </div>
+        </div>
+        <div class="platform-detail-diagram">
+          <div class="diagram-label">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+              <circle cx="12" cy="12" r="9"/>
+              <path d="M12 7v10M7 12h10"/>
+            </svg>
+            {t.technology.bstcv.diagram.title}
+          </div>
+          <MechanismFlow steps={t.technology.bstcv.diagram.steps} variant="bstcv" />
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ANTCV -->
+<section class="section platform-detail">
+  <div class="container">
+    <div class="platform-detail-card platform-detail-card--dark reveal-on-scroll">
+      <div class="platform-detail-head">
+        <div>
+          <p class="eyebrow eyebrow--light">{t.technology.antcv.eyebrow}</p>
+          <h2 class="platform-detail-name">
+            {t.technology.antcv.name}
+            <span class="platform-detail-full">{t.technology.antcv.fullName}</span>
+          </h2>
+        </div>
+        <span class="chip chip--dark">{t.technology.antcv.tag}</span>
+      </div>
+
+      <div class="platform-detail-grid platform-detail-grid--flip">
+        <div class="platform-detail-diagram">
+          <div class="diagram-label diagram-label--light">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+              <path d="M7 3h10M7 3v18M7 8h6a3 3 0 0 1 0 6H7M17 3v7"/>
+              <circle cx="14" cy="16" r="3"/>
+              <circle cx="14" cy="16" r="0.6" fill="currentColor"/>
+            </svg>
+            {t.technology.antcv.diagram.title}
+          </div>
+          <MechanismFlow steps={t.technology.antcv.diagram.steps} variant="antcv" />
+        </div>
+        <div class="platform-detail-copy">
+          <div class="detail-block">
+            <h3>{t.technology.antcv.scenarios.heading}</h3>
+            <ul class="detail-list">
+              {t.technology.antcv.scenarios.items.map((item) => (
+                <li>{item}</li>
+              ))}
+            </ul>
+          </div>
+          <div class="detail-block">
+            <h3>{t.technology.antcv.mechanism.heading}</h3>
+            <ul class="detail-list">
+              {t.technology.antcv.mechanism.items.map((item) => (
+                <li>{item}</li>
+              ))}
+            </ul>
+          </div>
+          <div class="detail-block">
+            <h3>{t.technology.antcv.advantages.heading}</h3>
+            <ul class="detail-list detail-list--check">
+              {t.technology.antcv.advantages.items.map((item) => (
+                <li>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true">
+                    <path d="M4 12l5 5L20 7"/>
+                  </svg>
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<CtaBand
+  heading={t.technology.ctaBand.heading}
+  primary={{ label: t.technology.ctaBand.primary, href: langPath(lang, 'clinical-data/') }}
+  secondary={{ label: t.technology.ctaBand.secondary, href: langPath(lang, 'pipeline/') }}
+/>
+
+<style>
+  .overview-block {
+    max-width: 760px;
+  }
+
+  .overview-heading {
+    margin-bottom: var(--space-6);
+    max-width: 22ch;
+  }
+
+  .overview-text {
+    color: var(--color-body-secondary);
+    font-size: var(--text-lg);
+    max-width: 56ch;
+  }
+
+  /* === Platform detail card === */
+  .platform-detail-card {
+    background-color: var(--color-white);
+    border: 1px solid var(--color-gray-50);
+    border-radius: var(--radius-xl);
+    padding: clamp(1.5rem, 4vw, 3rem);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .platform-detail-card--dark {
+    background-color: var(--color-dark-bg);
+    border-color: var(--color-dark-bg);
+  }
+
+  .platform-detail-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: var(--space-4);
+    padding-bottom: var(--space-8);
+    border-bottom: 1px solid var(--color-gray-50);
+    margin-bottom: var(--space-8);
+  }
+
+  .platform-detail-card--dark .platform-detail-head {
+    border-bottom-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .platform-detail-name {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    margin-top: var(--space-2);
+  }
+
+  .platform-detail-full {
+    font-size: var(--text-sm);
+    font-weight: var(--weight-medium);
+    color: var(--color-gray-500);
+  }
+
+  .platform-detail-card--dark .platform-detail-full {
+    color: var(--color-dark-muted);
+  }
+
+  .chip--dark {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.18);
+    color: var(--color-dark-text);
+  }
+
+  .platform-detail-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-12);
+    align-items: center;
+  }
+
+  .detail-block {
+    margin-bottom: var(--space-8);
+  }
+
+  .detail-block h3 {
+    font-size: 0.8rem;
+    font-weight: var(--weight-semibold);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-primary);
+    margin-bottom: var(--space-4);
+  }
+
+  .platform-detail-card--dark .detail-block h3 {
+    color: var(--color-primary-light);
+  }
+
+  .detail-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .detail-list li {
+    position: relative;
+    padding-left: var(--space-6);
+    color: var(--color-body-secondary);
+    font-size: var(--text-sm);
+    line-height: var(--leading-snug);
+  }
+
+  .detail-list li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.5em;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: var(--color-primary-light);
+  }
+
+  .platform-detail-card--dark .detail-list li {
+    color: var(--color-dark-muted);
+  }
+
+  .detail-list--check li {
+    padding-left: var(--space-8);
+  }
+
+  .detail-list--check li::before {
+    display: none;
+  }
+
+  .detail-list--check svg {
+    position: absolute;
+    left: 0;
+    top: 0.15em;
+    width: 16px;
+    height: 16px;
+    color: var(--color-primary);
+  }
+
+  .platform-detail-card--dark .detail-list--check svg {
+    color: var(--color-primary-light);
+  }
+
+  .detail-text {
+    color: var(--color-body-secondary);
+    font-size: var(--text-sm);
+    max-width: 44ch;
+  }
+
+  .platform-detail-card--dark .detail-text {
+    color: var(--color-dark-muted);
+  }
+
+  .detail-block--data {
+    background: var(--color-primary-soft);
+    border-radius: var(--radius-lg);
+    padding: var(--space-6);
+  }
+
+  .detail-block--data p {
+    color: var(--color-body);
+    font-weight: var(--weight-medium);
+    margin: 0;
+  }
+
+  .diagram-label {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    font-family: var(--font-display);
+    font-size: var(--text-lg);
+    font-weight: var(--weight-bold);
+    color: var(--color-heading);
+    margin-bottom: var(--space-6);
+  }
+
+  .diagram-label svg {
+    width: 24px;
+    height: 24px;
+    color: var(--color-primary);
+  }
+
+  .diagram-label--light {
+    color: var(--color-white);
+  }
+
+  .diagram-label--light svg {
+    color: var(--color-primary-light);
+  }
+
+  /* === Responsive === */
+  @media (max-width: 900px) {
+    .platform-detail-grid {
+      grid-template-columns: 1fr;
+      gap: var(--space-10);
+    }
+
+    .platform-detail-grid--flip .platform-detail-diagram {
+      order: -1;
+    }
+
+    .platform-detail-head {
+      flex-direction: column;
+    }
+  }
+</style>
