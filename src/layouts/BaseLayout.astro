@@ -1,215 +1,148 @@
 ---
-import crypto from 'node:crypto'
 import '../styles/global.css';
 import HeaderNav from '../components/header/HeaderNav.astro';
 import SiteFooter from '../components/footer/SiteFooter.astro';
-import { SITE_TITLE, SITE_DESCRIPTION } from '../data/siteConfig';
+import { dict, type Lang, langPath, PAGE_ROUTES } from '../i18n';
 
 export interface Props {
-  title?: string;
-  description?: string;
+  lang?: Lang;
+  page?: 'home' | 'about' | 'technology' | 'pipeline' | 'clinical' | 'team' | 'contact';
 }
 
-const ACCESS_CODE = import.meta.env.PUBLIC_ACCESS_CODE || 'NOVOMI-VAX-2026-X7K9M'
-const ACCESS_HASH = crypto.createHash('sha256').update(ACCESS_CODE).digest('hex')
-const STORAGE_KEY = 'novomi_access_token'
+const { lang = 'en', page } = Astro.props;
+const t = dict(lang);
+const base = import.meta.env.BASE_URL;
+const site = import.meta.env.SITE;
 
-const base = import.meta.env.BASE_URL
-const { title, description } = Astro.props;
+const pageMeta = page ? t.pages[page] : { title: t.meta.defaultTitle, description: t.meta.defaultDescription };
+const htmlLang = lang === 'zh' ? 'zh-CN' : 'en';
+const title = page ? `${pageMeta.title}` : t.meta.defaultTitle;
+const description = page ? pageMeta.description : t.meta.defaultDescription;
+
+const route = PAGE_ROUTES.find((r) => r.title === page);
+const canonicalPath = route ? `${base}${lang === 'zh' ? 'zh/' : ''}${route.path}` : base;
+const alternatePaths = {
+  en: `${base}${route?.path ?? ''}`,
+  zh: `${base}zh/${route?.path ?? ''}`,
+};
 ---
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang={htmlLang}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{title ?? SITE_TITLE}</title>
-    <meta name="description" content={description ?? SITE_DESCRIPTION} />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={site + canonicalPath} />
+    <link rel="alternate" hreflang="en" href={site + alternatePaths.en} />
+    <link rel="alternate" hreflang="zh-CN" href={site + alternatePaths.zh} />
+    <link rel="alternate" hreflang="x-default" href={site + alternatePaths.en} />
     <link rel="icon" type="image/png" href={base + 'images/Novomi-logo.png'} />
-    <link
-      rel="preload"
-      as="font"
-      type="font/woff2"
-      crossorigin
-      href={base + 'fonts/raleway-latin.woff2'}
-    />
+    <link rel="preload" as="font" type="font/woff2" crossorigin href={base + 'fonts/raleway-latin.woff2'} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={t.meta.siteName} />
+    <meta property="og:title" content={page ? `${pageMeta.title}` : t.meta.ogTitle} />
+    <meta property="og:description" content={page ? description : t.meta.ogDescription} />
+    <meta property="og:url" content={site + canonicalPath} />
+    <meta name="twitter:card" content="summary" />
+
+    <script is:inline type="application/ld+json" set:html={JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'Organization',
+      name: 'NOVOMI VAX',
+      legalName: 'NOVOMI VAX Limited',
+      url: site + base,
+      email: 'enhe00000@connect.hku.hk',
+      telephone: '+85284970818',
+      address: {
+        '@type': 'PostalAddress',
+        streetAddress: 'L3-61, Lab Block, 21 Sassoon Road, Pokfulam',
+        addressLocality: 'Hong Kong',
+        addressCountry: 'HK',
+      },
+      foundingDate: '2025-10-28',
+      description: t.meta.ogDescription,
+    })} />
   </head>
   <body>
-    <script is:inline define:vars={{ accessHash: ACCESS_HASH, storageKey: STORAGE_KEY, baseUrl: import.meta.env.BASE_URL }}>
+    <script is:inline define:vars={{ base }}>
+      // Progressive enhancement gate + language auto-detect (no manual override = browser rules)
+      document.documentElement.classList.add('js');
       (function () {
-        if (localStorage.getItem(storageKey) !== accessHash) {
-          window.location.replace(baseUrl + 'signin')
-        }
-      })()
+        try {
+          var override = localStorage.getItem('novomi_lang');
+          if (override === 'zh' || override === 'en') return;
+          var lang = (navigator.language || '').toLowerCase();
+          var isChinese =
+            lang.indexOf('zh') === 0 ||
+            Intl.DateTimeFormat().resolvedOptions().timeZone === 'Asia/Shanghai';
+          var zhRoot = base + 'zh/';
+          var here = window.location.pathname;
+          if (isChinese && here.indexOf(zhRoot) === -1) {
+            var rel = here.replace(base, '');
+            window.location.replace(zhRoot + rel);
+          }
+        } catch (e) {}
+      })();
     </script>
-    <HeaderNav />
-    <main>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <HeaderNav lang={lang} />
+    <main id="main">
       <slot />
     </main>
-    <SiteFooter />
-    <div id="lock-overlay"></div>
-    <div class="lock-btn" id="lock-btn" role="button" tabindex="0" aria-label="Lock this page">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-        <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-      </svg>
-      <div class="lock-tooltip" id="lock-tooltip">
-        <p class="lock-tooltip-text">Lock this page? You'll need the access code to reopen.</p>
-        <div class="lock-tooltip-actions">
-          <button class="lock-confirm" id="lock-confirm">Lock</button>
-          <button class="lock-cancel" id="lock-cancel">Cancel</button>
-        </div>
-      </div>
-    </div>
-    <script is:inline define:vars={{ accessHash: ACCESS_HASH, storageKey: STORAGE_KEY, baseUrl: import.meta.env.BASE_URL }}>
-      // @ts-nocheck
-      document.addEventListener('DOMContentLoaded', () => {
-        const reducedMotion = window.matchMedia(
-          '(prefers-reduced-motion: reduce)'
-        ).matches;
-        if (reducedMotion) return;
+    <SiteFooter lang={lang} />
+    <script is:inline>
+      document.addEventListener('DOMContentLoaded', function () {
+        var restoreScroll = null;
+        try {
+          var stored = sessionStorage.getItem('novomi_scroll');
+          if (stored !== null) {
+            restoreScroll = parseInt(stored, 10);
+            sessionStorage.removeItem('novomi_scroll');
+          }
+        } catch (e) {}
 
-        const observer = new IntersectionObserver(
-          (entries) => {
-            for (const entry of entries) {
-              if (entry.isIntersecting) {
-                entry.target.classList.add('is-visible');
-                observer.unobserve(entry.target);
+        var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        // Language switch navigation: show everything instantly and restore the scroll position.
+        if (restoreScroll !== null || reduce) {
+          document.querySelectorAll('.reveal-on-scroll').forEach(function (el) {
+            el.classList.add('is-visible');
+          });
+          if (restoreScroll !== null) {
+            window.scrollTo(0, restoreScroll);
+            window.addEventListener('load', function () {
+              window.scrollTo(0, restoreScroll);
+            });
+          }
+          return;
+        }
+
+        var pending = Array.from(document.querySelectorAll('.reveal-on-scroll'));
+        var observer = new IntersectionObserver(
+          function (entries) {
+            for (var i = 0; i < entries.length; i++) {
+              if (entries[i].isIntersecting) {
+                entries[i].target.classList.add('is-visible');
+                observer.unobserve(entries[i].target);
               }
             }
           },
-          { threshold: 0.1 }
+          { threshold: 0.05, rootMargin: '0px 0px -30px 0px' }
         );
-
-        document
-          .querySelectorAll('.reveal-on-scroll')
-          .forEach((el) => observer.observe(el));
+        pending.forEach(function (el) {
+          observer.observe(el);
+        });
+        // Safety fallback: never leave content hidden (headless renders, print,
+        // fast scrolls, or observers that fail to fire).
+        setTimeout(function () {
+          document.querySelectorAll('.reveal-on-scroll:not(.is-visible)').forEach(function (el) {
+            el.classList.add('is-visible');
+          });
+        }, 1800);
       });
-
-      var lockBtn = document.getElementById('lock-btn')
-      var lockTooltip = document.getElementById('lock-tooltip')
-      var lockOverlay = document.getElementById('lock-overlay')
-      var lockConfirm = document.getElementById('lock-confirm')
-      var lockCancel = document.getElementById('lock-cancel')
-
-      function showTooltip() {
-        lockTooltip.classList.add('visible')
-        lockOverlay.classList.add('visible')
-      }
-
-      function hideTooltip() {
-        lockTooltip.classList.remove('visible')
-        lockOverlay.classList.remove('visible')
-      }
-
-      lockBtn.addEventListener('click', function (e) {
-        e.stopPropagation()
-        if (lockTooltip.classList.contains('visible')) {
-          hideTooltip()
-        } else {
-          showTooltip()
-        }
-      })
-
-      lockOverlay.addEventListener('click', hideTooltip)
-      lockCancel.addEventListener('click', hideTooltip)
-
-      lockConfirm.addEventListener('click', function () {
-        localStorage.removeItem(storageKey)
-        window.location.replace(baseUrl + 'signin')
-      })
-
-      document.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape') hideTooltip()
-      })
     </script>
-    <style is:global>
-      .lock-btn {
-        position: fixed;
-        bottom: var(--space-6);
-        right: var(--space-6);
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        background: rgba(255, 255, 255, 0.15);
-        backdrop-filter: blur(8px);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: rgba(255, 255, 255, 0.6);
-        cursor: pointer;
-        z-index: 9999;
-        transition: all var(--transition-fast);
-      }
-      .lock-btn:hover,
-      .lock-btn:focus-visible {
-        background: rgba(255, 255, 255, 0.25);
-        color: rgba(255, 255, 255, 0.9);
-        border-color: rgba(255, 255, 255, 0.4);
-      }
-      .lock-btn:focus-visible {
-        outline: 2px solid var(--color-primary);
-        outline-offset: 3px;
-      }
-      .lock-tooltip {
-        position: absolute;
-        bottom: calc(100% + 12px);
-        right: 0;
-        background: var(--color-white);
-        color: var(--color-body);
-        border-radius: var(--radius-lg);
-        padding: var(--space-4);
-        min-width: 240px;
-        box-shadow: var(--shadow-lg);
-        opacity: 0;
-        visibility: hidden;
-        transform: translateY(4px);
-        transition: all var(--transition-fast);
-      }
-      .lock-tooltip.visible {
-        opacity: 1;
-        visibility: visible;
-        transform: translateY(0);
-      }
-      .lock-tooltip-text {
-        font-size: var(--text-sm);
-        margin-bottom: var(--space-3);
-        color: var(--color-body);
-        line-height: var(--leading-snug);
-      }
-      .lock-tooltip-actions {
-        display: flex;
-        gap: var(--space-2);
-        justify-content: flex-end;
-      }
-      .lock-tooltip-actions button {
-        font-family: var(--font-body);
-        font-size: var(--text-sm);
-        font-weight: var(--weight-semibold);
-        padding: var(--space-1) var(--space-3);
-        border-radius: var(--radius-sm);
-        border: none;
-        cursor: pointer;
-        transition: background var(--transition-fast);
-      }
-      .lock-confirm {
-        background: #d93025;
-        color: white;
-      }
-      .lock-confirm:hover { background: #c5221f; }
-      .lock-cancel {
-        background: var(--color-gray-50);
-        color: var(--color-body);
-      }
-      .lock-cancel:hover { background: var(--color-gray-100); }
-      #lock-overlay {
-        display: none;
-        position: fixed;
-        inset: 0;
-        z-index: 9998;
-      }
-      #lock-overlay.visible { display: block; }
-    </style>
   </body>
 </html>

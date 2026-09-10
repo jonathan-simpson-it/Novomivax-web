@@ -1,0 +1,133 @@
+---
+export interface Milestone {
+  date: string;
+  text: string;
+  future?: boolean;
+}
+
+interface Props {
+  items: readonly Milestone[];
+  dark?: boolean;
+}
+
+const { items, dark = false } = Astro.props;
+---
+
+<ol class:list={['milestones', dark && 'milestones--dark']}>
+  {items.map((item) => (
+    <li class:list={['milestone', item.future && 'milestone--future']}>
+      <span class="milestone-dot" aria-hidden="true"></span>
+      <div class="milestone-card">
+        <span class="milestone-date">{item.date}</span>
+        <p class="milestone-text">{item.text}</p>
+      </div>
+    </li>
+  ))}
+</ol>
+
+<style>
+  .milestones {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-6);
+    position: relative;
+  }
+
+  .milestones::before {
+    content: '';
+    position: absolute;
+    top: 7px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--color-primary-light), rgba(74, 154, 212, 0.15));
+    border-radius: 1px;
+  }
+
+  .milestone {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .milestone-dot {
+    position: relative;
+    z-index: 1;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 3px solid var(--color-white);
+    background-color: var(--color-primary);
+    box-shadow: 0 0 0 2px var(--color-primary-light);
+  }
+
+  .milestone--future .milestone-dot {
+    background-color: var(--color-white);
+    border: 2px dashed var(--color-primary-light);
+    box-shadow: none;
+    animation: dot-pulse 2.4s ease-in-out infinite;
+  }
+
+  @keyframes dot-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(49, 127, 179, 0.4); }
+    50% { box-shadow: 0 0 0 8px rgba(49, 127, 179, 0.15); }
+  }
+
+  .milestone-date {
+    font-family: var(--font-display);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-bold);
+    color: var(--color-primary);
+  }
+
+  .milestone-text {
+    font-size: var(--text-sm);
+    color: var(--color-body-secondary);
+    line-height: var(--leading-snug);
+    margin: 0;
+  }
+
+  .milestones--dark .milestone-text {
+    color: var(--color-dark-muted);
+  }
+
+  .milestones--dark .milestone-date {
+    color: var(--color-primary-light);
+  }
+
+  .milestones--dark .milestone-dot {
+    border-color: var(--color-dark-bg);
+  }
+
+  @media (max-width: 900px) {
+    .milestones {
+      grid-template-columns: 1fr;
+      gap: var(--space-6);
+    }
+
+    .milestones::before {
+      top: 7px;
+      bottom: 0;
+      left: 7px;
+      width: 2px;
+      height: auto;
+      right: auto;
+      background: linear-gradient(180deg, var(--color-primary-light), rgba(74, 154, 212, 0.15));
+    }
+
+    .milestone {
+      flex-direction: row;
+      align-items: flex-start;
+      gap: var(--space-4);
+      padding-left: var(--space-6);
+    }
+
+    .milestone-dot {
+      position: absolute;
+      left: 0;
+    }
+  }
+</style>

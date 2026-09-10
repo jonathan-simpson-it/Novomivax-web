@@ -1,0 +1,188 @@
+---
+import type { Lang } from '../../i18n';
+import { dict, langPath } from '../../i18n';
+import PageHero from './PageHero.astro';
+import CtaBand from './CtaBand.astro';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = dict(lang);
+const base = import.meta.env.BASE_URL;
+
+const photoMap: Record<string, string> = {
+  'Prof. JD Huang': 'jd-huang.png',
+  'Prof. Tian Xu': 'tian-xu.webp',
+  'Dr. Jinquan Liu': 'jinquan-liu.png',
+  'Mr. ENHE': 'en-he.png',
+  'Dr. Renhao Li': 'renhao-li.png',
+  'Prof. Lieping Chen': 'lieping-chen.webp',
+  'Prof. Maie St. John': 'maie-st-john.webp',
+  'Dr. Qinghui Li': 'qinghui-li.jpg',
+};
+
+const groups = [
+  { key: 'founders', group: t.team.founders },
+  { key: 'advisory', group: t.team.advisory },
+  { key: 'management', group: t.team.management },
+] as const;
+---
+
+<PageHero
+  lang={lang}
+  eyebrow={t.team.hero.eyebrow}
+  title={t.team.hero.title}
+  intro={t.team.hero.intro}
+/>
+
+{groups.map(({ group }, gi) => (
+  <section class:list={['section', gi % 2 === 1 && 'section-alt']}>
+    <div class="container">
+      <div class="section-head reveal-on-scroll">
+        <p class="eyebrow">{String(gi + 1).padStart(2, '0')}</p>
+        <h2>{group.heading}</h2>
+        <p>{group.intro}</p>
+      </div>
+      <div class="team-grid">
+        {group.members.map((member) => {
+          const displayName = lang === 'zh' && member.nameZh ? member.nameZh : member.name;
+          return (
+            <article class="member-card reveal-on-scroll">
+              <div class="member-photo">
+                <img
+                  src={base + 'images/team/' + photoMap[member.name]}
+                  alt={displayName}
+                />
+              </div>
+              <div class="member-body">
+                <span class="member-role">{member.role}</span>
+                <h3 class="member-name">{displayName}</h3>
+                <span class="member-subtitle">{member.subtitle}</span>
+                <ul class="member-bio">
+                  {member.bio.map((line) => (
+                    <li>{line}</li>
+                  ))}
+                </ul>
+              </div>
+            </article>
+          );
+        })}
+      </div>
+    </div>
+  </section>
+))}
+
+<CtaBand
+  heading={t.team.ctaBand.heading}
+  primary={{ label: t.team.ctaBand.primary, href: langPath(lang, 'contact/') }}
+  secondary={{ label: t.team.ctaBand.secondary, href: langPath(lang, 'contact/') }}
+/>
+
+<style>
+  .team-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-6);
+  }
+
+  .member-card {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--color-gray-50);
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    background-color: var(--color-white);
+    transition: transform var(--transition-base), box-shadow var(--transition-base);
+  }
+
+  .member-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+  }
+
+  .member-photo {
+    aspect-ratio: 4 / 4.2;
+    overflow: hidden;
+    background: var(--color-off-white);
+  }
+
+  .member-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    transition: transform var(--transition-slow);
+  }
+
+  .member-card:hover .member-photo img {
+    transform: scale(1.04);
+  }
+
+  .member-body {
+    padding: var(--space-6);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .member-role {
+    font-size: 0.72rem;
+    font-weight: var(--weight-semibold);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-primary);
+  }
+
+  .member-name {
+    color: var(--color-heading);
+  }
+
+  .member-subtitle {
+    font-size: var(--text-sm);
+    color: var(--color-gray-500);
+  }
+
+  .member-bio {
+    list-style: none;
+    padding: 0;
+    margin-top: var(--space-3);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    border-top: 1px solid var(--color-gray-50);
+    padding-top: var(--space-4);
+  }
+
+  .member-bio li {
+    position: relative;
+    padding-left: var(--space-5);
+    font-size: var(--text-xs);
+    color: var(--color-body-secondary);
+    line-height: var(--leading-snug);
+  }
+
+  .member-bio li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.45em;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background-color: var(--color-primary-light);
+  }
+
+  @media (max-width: 960px) {
+    .team-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .team-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

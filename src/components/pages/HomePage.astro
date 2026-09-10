@@ -1,0 +1,711 @@
+---
+import type { Lang } from '../../i18n';
+import { dict, langPath } from '../../i18n';
+import ScienceSection from './ScienceSection.astro';
+import MilestoneTimeline from './MilestoneTimeline.astro';
+import CtaBand from './CtaBand.astro';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = dict(lang);
+const base = import.meta.env.BASE_URL;
+
+const founderPhotos = ['jd-huang.png', 'tian-xu.webp'];
+---
+
+<!-- ===== Hero: video layer behind content (old site core feeling) ===== -->
+<section id="top" class="hero">
+  <div class="hero-media">
+    <video
+      autoplay
+      muted
+      loop
+      playsinline
+      disableRemotePlayback
+      poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1920' height='1080'%3E%3Crect fill='%230d1520' width='1920' height='1080'/%3E%3C/svg%3E"
+      class="hero-video"
+    >
+      <source src={base + 'videos/hero-background.mp4'} type="video/mp4" />
+    </video>
+    <div class="hero-overlay"></div>
+  </div>
+  <div class="hero-content container">
+    <p class="eyebrow eyebrow--light reveal-on-scroll">{t.hero.eyebrow}</p>
+    <h1 class="hero-headline reveal-on-scroll">{t.hero.title}</h1>
+    <p class="hero-paragraph reveal-on-scroll">{t.hero.subtitle}</p>
+    <div class="hero-actions reveal-on-scroll">
+      <a href={langPath(lang, 'contact/')} class="btn btn-primary">{t.hero.primaryCta}</a>
+      <a href={langPath(lang, 'contact/')} class="btn btn-secondary">{t.hero.secondaryCta}</a>
+      <a href="#science" class="btn btn-ghost">{t.hero.scienceCta}</a>
+    </div>
+    <div class="scroll-hint" aria-hidden="true">
+      <span class="scroll-hint-line"></span>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Intro: who we are quick ===== -->
+<section id="intro" class="section">
+  <div class="container intro-grid">
+    <div class="intro-text reveal-on-scroll">
+      <p class="eyebrow">{t.home.intro.eyebrow}</p>
+      <h2>{t.home.intro.heading}</h2>
+      <p>{t.home.intro.paragraph}</p>
+      <a href={langPath(lang, 'about/')} class="link-arrow">
+        {t.home.intro.cta}
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M5 12h14M13 5l7 7-7 7"/>
+        </svg>
+      </a>
+    </div>
+    <div class="intro-facts reveal-on-scroll">
+      {t.home.intro.facts.map((fact) => (
+        <div class="fact-row">
+          <span class="fact-label">{fact.label}</span>
+          <strong class="fact-value">{fact.value}</strong>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<!-- ===== Science: animated explainer ===== -->
+<ScienceSection lang={lang} />
+
+<!-- ===== Platforms ===== -->
+<section id="platforms" class="section section-alt">
+  <div class="container">
+    <div class="section-head reveal-on-scroll">
+      <p class="eyebrow">{t.home.platforms.eyebrow}</p>
+      <h2>{t.home.platforms.heading}</h2>
+      <p>{t.home.platforms.intro}</p>
+    </div>
+    <div class="platform-grid">
+      {(['bstcv', 'antcv'] as const).map((key, idx) => {
+        const platform = t.home.platforms[key];
+        const variant = key === 'bstcv' ? 'platform--blue' : 'platform--teal';
+        return (
+          <article class:list={['platform-card', variant, 'reveal-on-scroll']}>
+            <div class="platform-head">
+              <span class="platform-name">{platform.name}</span>
+              <span class="platform-full">{platform.fullName}</span>
+            </div>
+            <p class="platform-tagline">{platform.tagline}</p>
+            <dl class="platform-stats">
+              {platform.stats.map((stat) => (
+                <div class="platform-stat">
+                  <dt class="platform-stat-value">{stat.value}</dt>
+                  <dd class="platform-stat-label">{stat.label}</dd>
+                </div>
+              ))}
+            </dl>
+            <a href={langPath(lang, 'technology/')} class="btn btn-outline btn-sm">
+              {t.home.platforms.cta}
+            </a>
+          </article>
+        );
+      })}
+    </div>
+  </div>
+</section>
+
+<!-- ===== Pipeline strip (dark) ===== -->
+<section id="pipeline" class="section section-dark pipeline-strip">
+  <div class="container">
+    <div class="section-head reveal-on-scroll">
+      <p class="eyebrow eyebrow--light">{t.home.pipeline.eyebrow}</p>
+      <h2>{t.home.pipeline.heading}</h2>
+      <p>{t.home.pipeline.intro}</p>
+    </div>
+    <div class="pipeline-rows">
+      {t.home.pipeline.rows.map((row) => (
+        <div class="pipeline-row reveal-on-scroll">
+          <span class="pipeline-code">{row.code}</span>
+          <div class="pipeline-info">
+            <strong>{row.route}</strong>
+            <span>{row.focus}</span>
+          </div>
+          <span class="pipeline-progress">
+            <span class="pipeline-progress-dot" aria-hidden="true"></span>
+            {row.progress}
+          </span>
+        </div>
+      ))}
+    </div>
+    <div class="pipeline-cta reveal-on-scroll">
+      <a href={langPath(lang, 'pipeline/')} class="btn btn-secondary">{t.home.pipeline.cta}</a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Milestones ===== -->
+<section class="section section-alt">
+  <div class="container">
+    <div class="section-head reveal-on-scroll">
+      <p class="eyebrow">{t.home.milestones.eyebrow}</p>
+      <h2>{t.home.milestones.heading}</h2>
+    </div>
+    <div class="reveal-on-scroll">
+      <MilestoneTimeline items={t.home.milestones.items} />
+    </div>
+    <div class="milestones-cta reveal-on-scroll">
+      <a href={langPath(lang, 'about/')} class="link-arrow">
+        {t.home.milestones.cta}
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M5 12h14M13 5l7 7-7 7"/>
+        </svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Team preview ===== -->
+<section class="section">
+  <div class="container team-preview">
+    <div class="section-head reveal-on-scroll">
+      <p class="eyebrow">{t.home.team.eyebrow}</p>
+      <h2>{t.home.team.heading}</h2>
+      <p>{t.home.team.intro}</p>
+    </div>
+    <div class="team-preview-grid">
+      {t.home.team.members.map((member, i) => {
+        const displayName = lang === 'zh' && member.nameZh ? member.nameZh : member.name;
+        return (
+          <figure class="team-preview-card reveal-on-scroll">
+            <div class="team-preview-photo">
+              <img
+                src={base + 'images/team/' + founderPhotos[i]}
+                alt={displayName}
+              />
+            </div>
+            <figcaption>
+              <strong>{displayName}</strong>
+              <span>{member.role}</span>
+            </figcaption>
+          </figure>
+        );
+      })}
+    </div>
+    <div class="team-preview-cta reveal-on-scroll">
+      <a href={langPath(lang, 'team/')} class="btn btn-dark">{t.home.team.cta}</a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CTA band ===== -->
+<CtaBand
+  heading={t.home.ctaBand.heading}
+  paragraph={t.home.ctaBand.paragraph}
+  primary={{ label: t.home.ctaBand.primary, href: langPath(lang, 'contact/') }}
+  secondary={{ label: t.home.ctaBand.secondary, href: langPath(lang, 'contact/') }}
+/>
+
+<!-- ===== Contact strip ===== -->
+<section class="section contact-strip">
+  <div class="container contact-strip-grid">
+    <a href={`mailto:${t.home.contactStrip.email}`} class="contact-strip-item reveal-on-scroll">
+      <span class="contact-strip-label">Email</span>
+      <strong>{t.home.contactStrip.email}</strong>
+    </a>
+    <a href={`tel:${t.home.contactStrip.phone.replace(/\s/g, '')}`} class="contact-strip-item reveal-on-scroll">
+      <span class="contact-strip-label">Phone</span>
+      <strong>{t.home.contactStrip.phone}</strong>
+    </a>
+    <div class="contact-strip-item contact-strip-item--address reveal-on-scroll">
+      <span class="contact-strip-label">Address</span>
+      <strong>{t.home.contactStrip.address}</strong>
+    </div>
+    <a href={langPath(lang, 'contact/')} class="contact-strip-cta reveal-on-scroll">
+      {t.home.contactStrip.cta}
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <path d="M5 12h14M13 5l7 7-7 7"/>
+      </svg>
+    </a>
+  </div>
+</section>
+
+<style>
+  /* === Hero === */
+  .hero {
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-height: 100vh;
+    overflow: hidden;
+  }
+
+  .hero-media {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+
+  .hero-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      135deg,
+      rgba(13, 21, 32, 0.88) 0%,
+      rgba(13, 21, 32, 0.65) 50%,
+      rgba(20, 31, 43, 0.5) 100%
+    );
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 1;
+    max-width: 760px;
+    padding-top: 96px;
+    padding-bottom: var(--space-16);
+  }
+
+  .hero-headline {
+    color: var(--color-white);
+    margin-top: var(--space-4);
+    margin-bottom: var(--space-6);
+    max-width: 24ch;
+  }
+
+  .hero-paragraph {
+    font-size: var(--text-lg);
+    color: var(--color-dark-muted);
+    margin-bottom: var(--space-8);
+    max-width: 52ch;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: var(--space-4);
+    flex-wrap: wrap;
+  }
+
+  .btn-ghost {
+    background-color: transparent;
+    color: var(--color-dark-text);
+    border-color: transparent;
+  }
+
+  .btn-ghost:hover {
+    color: var(--color-white);
+    background-color: rgba(255, 255, 255, 0.08);
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: var(--space-8);
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  .scroll-hint-line {
+    width: 1px;
+    height: 44px;
+    background: linear-gradient(to bottom, transparent, var(--color-primary-light));
+    animation: scroll-pulse 2.2s ease-in-out infinite;
+  }
+
+  @keyframes scroll-pulse {
+    0%, 100% { opacity: 0.3; transform: scaleY(0.7); }
+    50% { opacity: 1; transform: scaleY(1); }
+  }
+
+  /* === Intro === */
+  .intro-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: var(--space-16);
+    align-items: start;
+  }
+
+  .intro-text h2 {
+    margin-bottom: var(--space-6);
+    max-width: 20ch;
+  }
+
+  .intro-text p {
+    color: var(--color-body-secondary);
+    max-width: 46ch;
+  }
+
+  .intro-facts {
+    border-top: 1px solid var(--color-gray-50);
+  }
+
+  .fact-row {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    padding: var(--space-5) 0;
+    border-bottom: 1px solid var(--color-gray-50);
+  }
+
+  .fact-label {
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--color-gray-500);
+    font-weight: var(--weight-semibold);
+  }
+
+  .fact-value {
+    font-family: var(--font-display);
+    font-size: var(--text-lg);
+    color: var(--color-heading);
+  }
+
+  /* === Platforms === */
+  .platform-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-6);
+  }
+
+  .platform-card {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--radius-xl);
+    padding: var(--space-10);
+    border: 1px solid var(--color-gray-50);
+    background-color: var(--color-white);
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+    transition: transform var(--transition-base), box-shadow var(--transition-base);
+  }
+
+  .platform-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+  }
+
+  .platform-card::before {
+    content: '';
+    position: absolute;
+    top: -80px;
+    right: -80px;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    opacity: 0.12;
+    pointer-events: none;
+  }
+
+  .platform--blue::before {
+    background: var(--color-primary);
+  }
+
+  .platform--teal::before {
+    background: #2e7d6b;
+  }
+
+  .platform-head {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+
+  .platform-name {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    font-weight: var(--weight-bold);
+    color: var(--color-heading);
+    letter-spacing: 0.02em;
+  }
+
+  .platform-full {
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-gray-500);
+    font-weight: var(--weight-semibold);
+  }
+
+  .platform-tagline {
+    color: var(--color-body-secondary);
+    margin: 0;
+    max-width: 34ch;
+  }
+
+  .platform-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-4);
+    border-top: 1px solid var(--color-gray-50);
+    padding-top: var(--space-6);
+    margin: 0;
+  }
+
+  .platform-stat {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+
+  .platform-stat-value {
+    font-family: var(--font-display);
+    font-size: 1.6rem;
+    font-weight: var(--weight-bold);
+    color: var(--color-primary);
+  }
+
+  .platform--teal .platform-stat-value {
+    color: #2e7d6b;
+  }
+
+  .platform-stat-label {
+    font-size: var(--text-xs);
+    color: var(--color-gray-600);
+    line-height: var(--leading-snug);
+  }
+
+  /* === Pipeline strip === */
+  .pipeline-rows {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .pipeline-row {
+    display: grid;
+    grid-template-columns: 110px 1fr auto;
+    gap: var(--space-6);
+    align-items: center;
+    padding: var(--space-6) 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    transition: background-color var(--transition-fast);
+  }
+
+  .pipeline-row:hover {
+    background-color: rgba(255, 255, 255, 0.03);
+  }
+
+  .pipeline-code {
+    font-family: var(--font-display);
+    font-weight: var(--weight-bold);
+    color: var(--color-primary-light);
+    font-size: var(--text-lg);
+  }
+
+  .pipeline-info {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+
+  .pipeline-info strong {
+    font-family: var(--font-display);
+    color: var(--color-white);
+    font-size: var(--text-base);
+  }
+
+  .pipeline-info span {
+    font-size: var(--text-sm);
+    color: var(--color-dark-muted);
+  }
+
+  .pipeline-progress {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-3);
+    font-size: var(--text-sm);
+    color: var(--color-dark-text);
+    text-align: right;
+    max-width: 34ch;
+  }
+
+  .pipeline-progress-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: var(--color-primary-light);
+    flex-shrink: 0;
+    animation: dot-blink 2.4s ease-in-out infinite;
+  }
+
+  @keyframes dot-blink {
+    0%, 100% { opacity: 0.35; }
+    50% { opacity: 1; }
+  }
+
+  .pipeline-cta {
+    margin-top: var(--space-8);
+  }
+
+  /* === Milestones === */
+  .milestones-cta {
+    margin-top: var(--space-10);
+  }
+
+  /* === Team preview === */
+  .team-preview-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-6);
+    max-width: 720px;
+  }
+
+  .team-preview-card {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .team-preview-photo {
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    aspect-ratio: 4 / 4.4;
+    background: var(--color-off-white);
+  }
+
+  .team-preview-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    transition: transform var(--transition-slow);
+  }
+
+  .team-preview-card:hover .team-preview-photo img {
+    transform: scale(1.04);
+  }
+
+  .team-preview-card figcaption {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+
+  .team-preview-card figcaption strong {
+    font-family: var(--font-display);
+    color: var(--color-heading);
+    font-size: var(--text-lg);
+  }
+
+  .team-preview-card figcaption span {
+    font-size: var(--text-sm);
+    color: var(--color-body-secondary);
+  }
+
+  .team-preview-cta {
+    margin-top: var(--space-10);
+  }
+
+  /* === Contact strip === */
+  .contact-strip-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr 1.4fr auto;
+    gap: var(--space-6);
+    align-items: center;
+  }
+
+  .contact-strip-item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    padding-right: var(--space-6);
+    border-right: 1px solid var(--color-gray-50);
+  }
+
+  .contact-strip-item--address {
+    border-right: none;
+  }
+
+  .contact-strip-label {
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--color-gray-500);
+    font-weight: var(--weight-semibold);
+  }
+
+  .contact-strip-item strong {
+    font-family: var(--font-display);
+    font-size: var(--text-sm);
+    color: var(--color-heading);
+    font-weight: var(--weight-semibold);
+  }
+
+  .contact-strip-item a:hover strong {
+    color: var(--color-primary);
+  }
+
+  .contact-strip-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-weight: var(--weight-semibold);
+    font-size: var(--text-sm);
+    white-space: nowrap;
+  }
+
+  .contact-strip-cta svg {
+    width: 16px;
+    height: 16px;
+    transition: transform var(--transition-fast);
+  }
+
+  .contact-strip-cta:hover svg {
+    transform: translateX(4px);
+  }
+
+  /* === Responsive === */
+  @media (max-width: 960px) {
+    .intro-grid,
+    .platform-grid {
+      grid-template-columns: 1fr;
+      gap: var(--space-10);
+    }
+
+    .pipeline-row {
+      grid-template-columns: 90px 1fr;
+    }
+
+    .pipeline-progress {
+      grid-column: 1 / -1;
+      text-align: left;
+      padding-left: 0;
+      max-width: none;
+    }
+
+    .contact-strip-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .contact-strip-item {
+      border-right: none;
+      padding-right: 0;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .contact-strip-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .team-preview-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .platform-stats {
+      grid-template-columns: 1fr;
+    }
+
+    .hero-content {
+      padding-top: 120px;
+    }
+  }
+</style>

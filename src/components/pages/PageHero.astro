@@ -1,0 +1,118 @@
+---
+import type { Lang } from '../../i18n';
+
+export interface Props {
+  lang: Lang;
+  eyebrow: string;
+  title: string;
+  intro?: string;
+  cta?: { label: string; href: string }[];
+}
+
+const { lang, eyebrow, title, intro, cta } = Astro.props;
+---
+
+<section class="page-hero">
+  <div class="page-hero-glow page-hero-glow--a" aria-hidden="true"></div>
+  <div class="page-hero-glow page-hero-glow--b" aria-hidden="true"></div>
+  <div class="page-hero-grid" aria-hidden="true"></div>
+  <div class="container page-hero-content">
+    <p class="eyebrow eyebrow--light reveal-on-scroll">{eyebrow}</p>
+    <h1 class="page-hero-title reveal-on-scroll">{title}</h1>
+    {intro && <p class="page-hero-intro reveal-on-scroll">{intro}</p>}
+    {cta && (
+      <div class="page-hero-actions reveal-on-scroll">
+        {cta.map((item) => (
+          <a
+            href={item.href}
+            class:list={['btn', item.href.startsWith('#') ? 'btn-secondary' : 'btn-primary']}
+          >
+            {item.label}
+          </a>
+        ))}
+      </div>
+    )}
+  </div>
+</section>
+
+<style>
+  .page-hero {
+    position: relative;
+    overflow: hidden;
+    background-color: var(--color-dark-bg);
+    padding-block: clamp(6.5rem, 12vw, 9rem) clamp(3.5rem, 7vw, 5rem);
+  }
+
+  .page-hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 860px;
+  }
+
+  .page-hero-title {
+    color: var(--color-white);
+    margin-top: var(--space-4);
+    margin-bottom: var(--space-6);
+    max-width: 24ch;
+  }
+
+  .page-hero-intro {
+    color: var(--color-dark-muted);
+    font-size: var(--text-lg);
+    max-width: 56ch;
+  }
+
+  .page-hero-actions {
+    display: flex;
+    gap: var(--space-4);
+    flex-wrap: wrap;
+    margin-top: var(--space-8);
+  }
+
+  .page-hero-glow {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(60px);
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  .page-hero-glow--a {
+    width: 480px;
+    height: 480px;
+    top: -160px;
+    right: -120px;
+    background: rgba(49, 127, 179, 0.35);
+    animation: hero-drift 14s ease-in-out infinite alternate;
+  }
+
+  .page-hero-glow--b {
+    width: 360px;
+    height: 360px;
+    bottom: -140px;
+    left: -80px;
+    background: rgba(74, 154, 212, 0.22);
+    animation: hero-drift 18s ease-in-out infinite alternate-reverse;
+  }
+
+  .page-hero-grid {
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(rgba(232, 234, 237, 0.08) 1px, transparent 1px);
+    background-size: 28px 28px;
+    mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.7), transparent 80%);
+    -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.7), transparent 80%);
+    pointer-events: none;
+  }
+
+  @keyframes hero-drift {
+    from { transform: translate(0, 0) scale(1); }
+    to { transform: translate(24px, 18px) scale(1.06); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .page-hero-glow {
+      animation: none;
+    }
+  }
+</style>

@@ -1,0 +1,185 @@
+---
+import type { Lang } from '../../i18n';
+import { dict, langPath } from '../../i18n';
+import PageHero from './PageHero.astro';
+import RoadmapTimeline from './RoadmapTimeline.astro';
+import CtaBand from './CtaBand.astro';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = dict(lang);
+const cols = t.pipeline.table.cols;
+---
+
+<PageHero
+  lang={lang}
+  eyebrow={t.pipeline.hero.eyebrow}
+  title={t.pipeline.hero.title}
+  intro={t.pipeline.hero.intro}
+/>
+
+<!-- Pipeline table -->
+<section class="section">
+  <div class="container">
+    <div class="table-head reveal-on-scroll">
+      <h2>{t.pipeline.table.heading}</h2>
+      <span class="chip">{t.pipeline.table.note}</span>
+    </div>
+
+    <div class="pipeline-table-wrap reveal-on-scroll">
+      <table class="pipeline-table">
+        <thead>
+          <tr>
+            <th scope="col">{cols.program}</th>
+            <th scope="col">{cols.route}</th>
+            <th scope="col">{cols.focus}</th>
+            <th scope="col">{cols.progress}</th>
+            <th scope="col">{cols.goal}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {t.pipeline.table.rows.map((row) => (
+            <tr>
+              <td class="cell-code">
+                <strong>{row.code}</strong>
+              </td>
+              <td>{row.route}</td>
+              <td>{row.focus}</td>
+              <td>
+                <span class="cell-progress">
+                  <span class="cell-progress-dot" aria-hidden="true"></span>
+                  {row.progress}
+                </span>
+              </td>
+              <td class="cell-goal">{row.goal}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- Roadmap -->
+<section class="section section-dark">
+  <div class="container">
+    <div class="section-head reveal-on-scroll">
+      <p class="eyebrow eyebrow--light">{t.pipeline.roadmap.eyebrow}</p>
+      <h2>{t.pipeline.roadmap.heading}</h2>
+    </div>
+    <div class="roadmap-wrap reveal-on-scroll">
+      <RoadmapTimeline phases={t.pipeline.roadmap.phases} />
+    </div>
+  </div>
+</section>
+
+<CtaBand
+  heading={t.pipeline.ctaBand.heading}
+  primary={{ label: t.pipeline.ctaBand.primary, href: langPath(lang, 'contact/') }}
+  secondary={{ label: t.pipeline.ctaBand.secondary, href: langPath(lang, 'clinical-data/') }}
+/>
+
+<style>
+  .table-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    flex-wrap: wrap;
+    margin-bottom: var(--space-8);
+  }
+
+  .pipeline-table-wrap {
+    overflow-x: auto;
+    border: 1px solid var(--color-gray-50);
+    border-radius: var(--radius-lg);
+  }
+
+  .pipeline-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 860px;
+  }
+
+  .pipeline-table thead th {
+    text-align: left;
+    font-size: 0.72rem;
+    font-weight: var(--weight-semibold);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-gray-600);
+    padding: var(--space-4) var(--space-5);
+    border-bottom: 1px solid var(--color-gray-50);
+    background-color: var(--color-off-white);
+    white-space: nowrap;
+  }
+
+  .pipeline-table tbody td {
+    padding: var(--space-5);
+    border-bottom: 1px solid var(--color-gray-50);
+    font-size: var(--text-sm);
+    color: var(--color-body-secondary);
+    vertical-align: top;
+    line-height: var(--leading-snug);
+  }
+
+  .pipeline-table tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  .pipeline-table tbody tr {
+    transition: background-color var(--transition-fast);
+  }
+
+  .pipeline-table tbody tr:hover {
+    background-color: var(--color-primary-soft);
+  }
+
+  .cell-code strong {
+    font-family: var(--font-display);
+    font-size: var(--text-lg);
+    font-weight: var(--weight-bold);
+    color: var(--color-primary);
+    white-space: nowrap;
+  }
+
+  .cell-progress {
+    display: inline-flex;
+    align-items: flex-start;
+    gap: var(--space-2);
+  }
+
+  .cell-progress-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background-color: var(--color-primary);
+    margin-top: 0.35em;
+    flex-shrink: 0;
+    animation: dot-blink 2.4s ease-in-out infinite;
+  }
+
+  @keyframes dot-blink {
+    0%, 100% { opacity: 0.35; }
+    50% { opacity: 1; }
+  }
+
+  .cell-goal {
+    color: var(--color-heading) !important;
+    font-weight: var(--weight-medium);
+  }
+
+  .roadmap-wrap {
+    max-width: 640px;
+  }
+
+  @media (max-width: 640px) {
+    .table-head {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+</style>

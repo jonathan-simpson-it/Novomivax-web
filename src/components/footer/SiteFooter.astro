@@ -1,52 +1,147 @@
 ---
-import { SITE_TITLE, FOOTER, CONTACT } from '../../data/siteConfig';
-const base = import.meta.env.BASE_URL
+import { dict, type Lang, langPath } from '../../i18n';
+
+interface Props {
+  lang?: Lang;
+}
+
+const { lang = 'en' } = Astro.props;
+const t = dict(lang);
+const base = import.meta.env.BASE_URL;
+
+const navItems = [
+  { label: t.nav.home, path: '' },
+  { label: t.nav.about, path: 'about/' },
+  { label: t.nav.technology, path: 'technology/' },
+  { label: t.nav.pipeline, path: 'pipeline/' },
+  { label: t.nav.clinicalData, path: 'clinical-data/' },
+  { label: t.nav.team, path: 'team/' },
+  { label: t.nav.contact, path: 'contact/' },
+];
 ---
 
 <footer class="site-footer">
-  <div class="container footer-inner">
-    <div class="footer-brand">
-      <img
-        src={base + 'images/Novomi-logo-transparent.png'}
-        alt="NOVOMI VAX logo"
-        class="footer-logo"
-        width="150"
-        height="30"
-      />
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href={langPath(lang, '')} class="footer-logo-link" aria-label={`${t.meta.siteName} home`}>
+          <img
+            src={base + 'images/Novomi-logo-transparent.png'}
+            alt={`${t.meta.siteName} logo`}
+            class="footer-logo"
+            width="150"
+            height="30"
+            loading="lazy"
+          />
+        </a>
+        <p class="footer-tagline">{t.footer.tagline}</p>
+      </div>
+      <div class="footer-col">
+        <p class="footer-heading">{t.footer.navHeading}</p>
+        <ul class="footer-links">
+          {navItems.map((item) => (
+            <li><a href={langPath(lang, item.path)}>{item.label}</a></li>
+          ))}
+        </ul>
+      </div>
+      <div class="footer-col">
+        <p class="footer-heading">{t.footer.contactHeading}</p>
+        <ul class="footer-links footer-contact">
+          <li><a href={`mailto:${t.home.contactStrip.email}`}>{t.home.contactStrip.email}</a></li>
+          <li><a href={`tel:${t.home.contactStrip.phone.replace(/\s/g, '')}`}>{t.home.contactStrip.phone}</a></li>
+          <li><span>{t.home.contactStrip.address}</span></li>
+        </ul>
+      </div>
     </div>
-    <p class="footer-disclaimer">{CONTACT.disclaimer}</p>
-    <p class="footer-copyright">{FOOTER.copyright}</p>
+    <div class="footer-bottom">
+      <p class="footer-disclaimer">{t.footer.disclaimer}</p>
+      <p class="footer-copyright">{t.footer.copyright}</p>
+    </div>
   </div>
 </footer>
 
 <style>
   .site-footer {
-    background-color: var(--color-off-white);
-    border-top: 1px solid var(--color-gray-50);
-    padding: var(--space-12) 0;
+    background-color: var(--color-dark-bg);
+    color: var(--color-dark-muted);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    padding-block: var(--space-16) var(--space-8);
   }
 
-  .footer-inner {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-6);
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1.2fr;
+    gap: var(--space-12);
+    padding-bottom: var(--space-12);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   }
 
   .footer-logo {
-    display: block;
     height: 30px;
     width: auto;
+    margin-bottom: var(--space-4);
+    filter: brightness(0) invert(1);
+  }
+
+  .footer-tagline {
+    max-width: 38ch;
+    font-size: 0.95rem;
+    color: var(--color-dark-muted);
+  }
+
+  .footer-heading {
+    font-size: 0.75rem;
+    font-weight: var(--weight-semibold);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-primary-light);
+    margin-bottom: var(--space-4);
+  }
+
+  .footer-links {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .footer-links a {
+    color: var(--color-dark-text);
+    font-size: 0.92rem;
+    transition: color var(--transition-fast);
+  }
+
+  .footer-links a:hover {
+    color: var(--color-primary-light);
+  }
+
+  .footer-contact span {
+    font-size: 0.92rem;
+    color: var(--color-dark-muted);
+  }
+
+  .footer-bottom {
+    padding-top: var(--space-6);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
   }
 
   .footer-disclaimer {
-    font-size: var(--text-xs);
-    color: var(--color-gray-400);
-    line-height: var(--leading-relaxed);
-    max-width: 600px;
+    font-size: 0.78rem;
+    max-width: 72ch;
+    color: rgba(232, 234, 237, 0.75);
   }
 
   .footer-copyright {
-    font-size: var(--text-xs);
-    color: var(--color-gray-400);
+    font-size: 0.78rem;
+    color: rgba(232, 234, 237, 0.68);
+  }
+
+  @media (max-width: 768px) {
+    .footer-grid {
+      grid-template-columns: 1fr;
+      gap: var(--space-8);
+    }
   }
 </style>

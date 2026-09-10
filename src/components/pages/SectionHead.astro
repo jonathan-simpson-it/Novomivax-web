@@ -1,0 +1,16 @@
+---
+export interface Props {
+  eyebrow?: string;
+  heading?: string;
+  intro?: string;
+  center?: boolean;
+}
+
+const { eyebrow, heading, intro, center = false } = Astro.props;
+---
+
+<div class:list={['section-head', center && 'section-head--center']}>
+  {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+  {heading && <h2>{heading}</h2>}
+  {intro && <p>{intro}</p>}
+</div>
