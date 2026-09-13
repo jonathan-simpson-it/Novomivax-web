@@ -1,8 +1,8 @@
 import { defineConfig } from 'astro/config';
 
 export default defineConfig({
-  site: 'https://jonathan-simpson-it.github.io',
-  base: '/Novomivax-web/',
+  site: 'https://novomivax-web.vercel.app',
+  base: '/',
   output: 'static',
   scopedStyleStrategy: 'where',
 });
