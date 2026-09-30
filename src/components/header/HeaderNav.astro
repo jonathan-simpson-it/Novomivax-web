@@ -67,13 +67,13 @@ const otherHref = langPath(otherLang, pathname.replace(base, '').replace(/^zh\//
           </li>
         ))}
         <li class="nav-item">
-          <a href={otherHref} class="nav-link nav-link--lang" data-lang-switch hreflang={otherLang === 'zh' ? 'zh-CN' : 'en'}>
+          <a href={otherHref} class="nav-link nav-link--lang" data-lang-switch data-lang-target={otherLang} hreflang={otherLang === 'zh' ? 'zh-CN' : 'en'}>
             {t.nav.switchLang}
           </a>
         </li>
       </ul>
     </nav>
-    <a href={otherHref} class="lang-toggle" data-lang-switch hreflang={otherLang === 'zh' ? 'zh-CN' : 'en'} aria-label={`${t.nav.switchLang} | ${t.nav.switchLangLabel}`}>
+    <a href={otherHref} class="lang-toggle" data-lang-switch data-lang-target={otherLang} hreflang={otherLang === 'zh' ? 'zh-CN' : 'en'} aria-label={`${t.nav.switchLang} | ${t.nav.switchLangLabel}`}>
       {t.nav.switchLang}
     </a>
   </div>
@@ -320,11 +320,14 @@ const otherHref = langPath(otherLang, pathname.replace(base, '').replace(/^zh\//
     });
   }
 
-  // Preserve scroll position across language switches
+  // Preserve scroll position and persist the manual language choice across
+  // switches (overrides BaseLayout's browser-language auto-detect).
   document.querySelectorAll('[data-lang-switch]').forEach((link) => {
     link.addEventListener('click', () => {
       try {
         sessionStorage.setItem('novomi_scroll', String(window.scrollY));
+        const target = link.getAttribute('data-lang-target');
+        if (target) localStorage.setItem('novomi_lang', target);
       } catch (e) {}
     });
   });
